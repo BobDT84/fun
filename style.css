@@ -1,0 +1,17 @@
+body {
+    background-color: #2B2B2B;
+}
+
+.letter-block {
+    background-color: #3B3B3B;
+    width: 50px;
+    height: 75px;
+    border: grey;
+    border-style: outset;
+}
+
+.round {
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+}
