@@ -1,4 +1,5 @@
 import csv
+import json
 
 file = 'words.txt'
 
@@ -46,8 +47,11 @@ wordsDict = {
 }
 for i in range(4,9):
     file = 'words' + str(i)
-    with open(file, 'w') as f:
-        write = csv.writer(f)
-        write.writerow(wordsDict[file])
+    with open(file + '.json', 'w') as f:
+        json.dump(wordsDict[file], f)
 
-print(words4)
+with open('allWords.json', 'w') as f:
+    json.dump(wordsDict,f)
+
+    
+print(json.dumps(words4[:10]))

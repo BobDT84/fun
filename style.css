@@ -16,3 +16,7 @@ body {
     gap: 2px;
     margin-bottom: 6px;
 }
+
+.invisible {
+    visibility: hidden;
+}
