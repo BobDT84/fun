@@ -46,9 +46,11 @@ wordsDict = {
     'words8':words8,
 }
 for i in range(4,9):
-    file = 'words' + str(i)
-    with open(file + '.json', 'w') as f:
-        json.dump(wordsDict[file], f)
+    wordGroup = 'words' + str(i)
+    file = wordGroup + '.csv'
+    with open(file, 'w') as f:
+        write = csv.writer(f)
+        write.writerow(wordsDict[wordGroup])
 
 with open('allWords.json', 'w') as f:
     json.dump(wordsDict,f)
