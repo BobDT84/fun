@@ -26,6 +26,9 @@ body {
 
 .letter-block {
     background-color: #3B3B3B;
+    color: whitesmoke;
+    font-size: 48px;
+    text-align: center;
     min-width: 40px;
     min-height: 55px;
     border: grey;

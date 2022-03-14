@@ -4,7 +4,7 @@ class Game{
         this.wordsArray = [];
         this.randomIndex ;
         this.attempts;
-        this.currentAttempt = 0;
+        this.currentAttempt = '0';
         this.letters;
         this.guess = [];
     }
@@ -57,12 +57,13 @@ class Game{
             this.clearSection(gameBoard);
             let attempt,letter;
             for(let i = 0; i<this.attempts; i++){
+                let attemptID = 'attempt' + i.toString();
                 attempt = document.createElement('div');
-                attempt.id = 'attempt' + i.toString();
+                attempt.id = attemptID;
                 attempt.className = 'attempt';
                 for(let j = 0; j<this.letters; j++){
                     letter = document.createElement('div');
-                    letter.id = j.toString();
+                    letter.id = attemptID + ' l' + j.toString();
                     letter.className = 'letter-block';
                     attempt.appendChild(letter);
                 }
@@ -74,9 +75,9 @@ class Game{
         let keyboard = document.querySelector('#keyboard');
         this.clearSection(keyboard);
         let rows = {
-            row1:'qwertyuiop',
-            row2:'asdfghjkl',
-            row3:'zxcvbnm',
+            row1:'QWERTYUIOP',
+            row2:'ASDFGHJKL',
+            row3:'ZXCVBNM',
         };
         for(let row in rows){
             let div = document.createElement('div');
@@ -105,19 +106,25 @@ class Game{
     addKeyboardListeners(){
         let keys = document.getElementsByClassName('key');
         for(let key of keys){
-            key.addEventListener('click',this.addToGuess);
+            key.addEventListener('click',(e) => {
+                let letter = e.path[0].innerText;
+                this.addToGuess(letter);
+            });
         }
     }
-    addToGuess(element){
-        let currentGuess = document.getElementById('guess');
-        let newGuess = currentGuess.innerText + element.innerText;
-        currentGuess.innerText = newGuess;
+    addToGuess(text){
+        if(this.guess.length < this.letters){
+            this.guess.push(text);
+            console.log(this.guess);
+            this.displayGuess();
+        }
     }
     displayGuess(){
-        let attemptID = '#attempt' + this.currentAttempt.toString();
-        let attempt = document.querySelector(attemptID);
-        for(let i=0; i<this.letters; i++){
-            let letter = document.querySelector(attemptID + '.' + i);
+        console.log('displayguess');
+        let attemptID = 'attempt' + this.currentAttempt;
+        let attempt = document.getElementById(attemptID);
+        for(let i=0; i<this.guess.length; i++){
+            let letter = document.getElementById(attemptID + ' l' + i);
             letter.innerText = this.guess[i];
         }
     }
@@ -138,6 +145,7 @@ function newGame(e){
     game.attempts = attempts;
     //guess.addEventListener()  How to know when this element is updated?
     game.setupGame();
+    return game;
 }
 
 
