@@ -24,7 +24,6 @@ body {
     margin-top: 20px;
 }
 
-
 .letter-block {
     background-color: #3B3B3B;
     min-width: 40px;
@@ -96,4 +95,8 @@ label, .button, p {
 
 .enter {
     width: fit-content;
+}
+
+#guess {
+    visibility: hidden;
 }

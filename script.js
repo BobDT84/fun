@@ -3,8 +3,10 @@ class Game{
         this.word = '';
         this.wordsArray = [];
         this.randomIndex ;
-        this.attempts ;
-        this.letters ;
+        this.attempts;
+        this.currentAttempt = 0;
+        this.letters;
+        this.guess = [];
     }
     isCorrectLetters(){
         if(this.letters < 4 || this.letters > 8){
@@ -60,7 +62,7 @@ class Game{
                 attempt.className = 'attempt';
                 for(let j = 0; j<this.letters; j++){
                     letter = document.createElement('div');
-                    letter.id = 'letter' + j.toString();
+                    letter.id = j.toString();
                     letter.className = 'letter-block';
                     attempt.appendChild(letter);
                 }
@@ -97,7 +99,27 @@ class Game{
     setupGame(){
         this.setupGameBoard();
         this.setupKeyboard();
+        this.addKeyboardListeners();
         this.setWord();
+    }
+    addKeyboardListeners(){
+        let keys = document.getElementsByClassName('key');
+        for(let key of keys){
+            key.addEventListener('click',this.addToGuess);
+        }
+    }
+    addToGuess(element){
+        let currentGuess = document.getElementById('guess');
+        let newGuess = currentGuess.innerText + element.innerText;
+        currentGuess.innerText = newGuess;
+    }
+    displayGuess(){
+        let attemptID = '#attempt' + this.currentAttempt.toString();
+        let attempt = document.querySelector(attemptID);
+        for(let i=0; i<this.letters; i++){
+            let letter = document.querySelector(attemptID + '.' + i);
+            letter.innerText = this.guess[i];
+        }
     }
     clearSection(element){
         while(element.firstChild){
@@ -110,9 +132,11 @@ class Game{
 function newGame(e){
     let letters = document.getElementById('letters').value;
     let attempts = document.getElementById('attempts').value;
+    let guess = document.getElementById('guess');
     let game = new Game();
     game.letters = letters
     game.attempts = attempts;
+    //guess.addEventListener()  How to know when this element is updated?
     game.setupGame();
 }
 
