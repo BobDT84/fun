@@ -3,7 +3,7 @@ class Game{
         this.word = '';
         this.wordsArray = [];
         this.randomIndex ;
-        this.rounds ;
+        this.attempts ;
         this.letters ;
     }
     isCorrectLetters(){
@@ -13,9 +13,9 @@ class Game{
         }
         return true;
     }
-    isCorrectRounds(){
-        if(this.rounds < 2 || this.rounds > 10){
-            alert('Round count not set properly');
+    isCorrectAttempts(){
+        if(this.attempts < 2 || this.attempts > 10){
+            alert('Attempt count not set properly');
             return false;
         }
         return true;
@@ -24,7 +24,7 @@ class Game{
         this.randomIndex = Math.floor(Math.random() * max);
     }
     setArray() {
-        if(this.isCorrectLetters() && this.isCorrectRounds()){
+        if(this.isCorrectLetters() && this.isCorrectAttempts()){
             let array,string;
             let path = './words/words' + this.letters.toString() + '.csv'
             let xmlhttp = new XMLHttpRequest();
@@ -45,36 +45,77 @@ class Game{
         } else {
             this.setRandomIndex();
             this.setArray();
-            this.setWord();
-            console.log('is setWord() stuck in a loop?');
+            //this.setWord();
+            //console.log('is setWord() stuck in a loop?');
         }
     }
     setupGameBoard(){
-        if(this.isCorrectLetters() && this.isCorrectRounds()){
+        if(this.isCorrectLetters() && this.isCorrectAttempts()){
             let gameBoard = document.querySelector('#game');
-            let round,letter;
-            for(let i = 0; i<this.rounds; i++){
-                round = document.createElement('div');
-                round.id = 'round' + i.toString();
-                round.className = 'round';
+            this.clearSection(gameBoard);
+            let attempt,letter;
+            for(let i = 0; i<this.attempts; i++){
+                attempt = document.createElement('div');
+                attempt.id = 'attempt' + i.toString();
+                attempt.className = 'attempt';
                 for(let j = 0; j<this.letters; j++){
                     letter = document.createElement('div');
                     letter.id = 'letter' + j.toString();
                     letter.className = 'letter-block';
-                    round.appendChild(letter);
+                    attempt.appendChild(letter);
                 }
-                gameBoard.appendChild(round);
+                gameBoard.appendChild(attempt);
             }
         }
     }
+    setupKeyboard(){
+        let keyboard = document.querySelector('#keyboard');
+        this.clearSection(keyboard);
+        let rows = {
+            row1:'qwertyuiop',
+            row2:'asdfghjkl',
+            row3:'zxcvbnm',
+        };
+        for(let row in rows){
+            let div = document.createElement('div');
+            div.id = row;
+            div.className = 'keyRow';
+            for(let letter of rows[row]){
+                let key = document.createElement('div');
+                key.className = 'key';
+                key.innerText = letter;
+                div.appendChild(key);
+            }
+            keyboard.appendChild(div);
+        }
+        let row3 = document.querySelector('#row3');
+        let key = document.createElement('div');
+        key.className = 'key enter';
+        key.innerText = 'Enter';
+        row3.appendChild(key);
+    }
     setupGame(){
         this.setupGameBoard();
+        this.setupKeyboard();
         this.setWord();
+    }
+    clearSection(element){
+        while(element.firstChild){
+            element.removeChild(element.firstChild);
+        }
     }
 }
 
-let game = new Game();
-game.letters = 5;
-game.rounds = 6;
-game.setupGame();
 
+function newGame(e){
+    let letters = document.getElementById('letters').value;
+    let attempts = document.getElementById('attempts').value;
+    let game = new Game();
+    game.letters = letters
+    game.attempts = attempts;
+    game.setupGame();
+}
+
+
+let newGameButton = document.getElementById('newGame');
+newGameButton.addEventListener('click', newGame);
