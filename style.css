@@ -7,6 +7,10 @@ body {
     justify-content: space-around;
 }
 
+#cheat {
+    width:auto;
+    height: 300px;
+}
 #sidebar {
     margin-top: 20px;
     min-width: fit-content;

@@ -46,7 +46,6 @@ class Game{
     }
     setWord(i=0){
         if(this.wordsArray.length > 0 && this.randomIndex > -1){
-            console.log('RandomIndex is ' + this.randomIndex);
             this.word = this.wordsArray[this.randomIndex].toUpperCase();
         } else if(i < 10){
             this.setRandomIndex();
@@ -54,7 +53,6 @@ class Game{
             console.log('setWord attempts - ' + i);
             i++;
             this.setWord(i);
-            //console.log('is setWord() stuck in a loop?');
         } else {
             alert('word not set');
         }
@@ -95,6 +93,7 @@ class Game{
                 let key = document.createElement('div');
                 key.className = 'key';
                 key.innerText = letter;
+                key.id = letter;
                 div.appendChild(key);
             }
             keyboard.appendChild(div);
@@ -164,10 +163,15 @@ class Game{
         }
     }
     submitGuess(){
+        this.checkLetters();
+        this.nextAttempt();
+    }
+    checkLetters(){
         let guess = this.guess;
         for(let i=0; i<guess.length; i++){
             let boxID = this.attemptID + ' l' + i.toString();
             let box = document.getElementById(boxID);
+            let letter = guess[i];
             if(this.isCorrectLetter(guess[i],i)){
                 box.classList.add('correct');
             } else if( this.isClose(guess[i])){
@@ -176,9 +180,6 @@ class Game{
                 box.classList.add('incorrect');
             }
         }
-        this.nextAttempt();
-        console.log('Guess: ' + this.guess);
-        console.log('Word: ' + this.word);
     }
     isCorrectLetter(guess, index){
         let word = this.word.split('');
@@ -195,8 +196,13 @@ class Game{
             this.guess = [];
         }
     }
+    cheat(){
+        let cheat = document.getElementById('cheat');
+        cheat.onclick = () =>{ console.log(this.word) };
+    }
     test(){
         //run in setup to test current method that is work in progress
+        this.cheat();
     }
 }
 
