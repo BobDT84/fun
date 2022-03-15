@@ -96,10 +96,27 @@ label, .button, p {
     border-style: outset;
 }
 
-.enter {
-    width: fit-content;
+.enter, .delete{
+    background-color: #3B3B3B;
+    color: whitesmoke;
+    min-width: 35px;
+    min-height: 30px;
+    border: grey;
+    border-style: outset;
 }
 
 #guess {
     visibility: hidden;
+}
+
+.correct {
+    background-color: green;
+}
+
+.close {
+    background-color: orangered;
+}
+
+.incorrect {
+    background-color: #2B2B2B;
 }
