@@ -105,7 +105,7 @@ class Game{
 
         key.className = 'enter';
         key.innerText = 'Enter';
-        key.onclick = () => {this.submitGuess();};
+        key.onclick = () => {this.submitPlayersGuess();};
         row3.appendChild(key);
 
         key = document.createElement('div');
@@ -113,8 +113,8 @@ class Game{
         key.innerText = 'Del';
         key.onclick = () => {
             this.playersGuess.pop();
-            this.clearGuessDisplay();
-            this.displayGuess();
+            this.clearPlayersGuessDisplay();
+            this.displayPlayersGuess();
         };
         row3.appendChild(key);
     }
@@ -132,27 +132,27 @@ class Game{
         for(let key of keys){
             key.onclick = (e) => {
                 let letter = e.path[0].innerText;
-                this.addToGuess(letter);
+                this.addToPlayersGuess(letter);
             };
         }
     }
-    addToGuess(text){
+    addToPlayersGuess(text){
         if(this.playersGuess.length < this.letterCount){
             this.playersGuess.push(text);
-            this.displayGuess();
+            this.displayPlayersGuess();
         }
     }
     setAttemptID(){
         this.attemptID = 'attempt' + this.currentAttempt;
     }
-    displayGuess(){
+    displayPlayersGuess(){
         let attempt = document.getElementById(this.attemptID);
         for(let i=0; i<this.playersGuess.length; i++){
             let letter = document.getElementById(this.attemptID + ' l' + i);
             letter.innerText = this.playersGuess[i];
         }
     }
-    clearGuessDisplay(){
+    clearPlayersGuessDisplay(){
         let guessBoxes = document.getElementById(this.attemptID).childNodes;
         for(let box of guessBoxes){ box.innerText = ''; }
     }
@@ -161,7 +161,7 @@ class Game{
             element.removeChild(element.firstChild);
         }
     }
-    submitGuess(){
+    submitPlayersGuess(){
         this.checkLetters();
         this.updateKeys();
         this.nextAttempt();
