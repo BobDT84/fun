@@ -3,21 +3,21 @@ class Game{
         this.word = '';
         this.wordsArray = [];
         this.randomIndex ;
-        this.attempts;
+        this.maxAttempts;
         this.currentAttempt = '0';
         this.attemptID;
-        this.letters;
-        this.guess = [];
+        this.letterCount;
+        this.playersGuess = [];
     }
     isCorrectLetterSetup(){
-        if(this.letters < 4 || this.letters > 8){
+        if(this.letterCount < 4 || this.letterCount > 8){
             alert('letter count not set properly');
             return false;
         }
         return true;
     }
     isCorrectAttemptSetup(){
-        if(this.attempts < 2 || this.attempts > 10){
+        if(this.maxAttempts < 2 || this.maxAttempts > 10){
             alert('Attempt count not set properly');
             return false;
         }
@@ -31,7 +31,7 @@ class Game{
     setArray() {
         if(this.isCorrectLetterSetup() && this.isCorrectAttemptSetup()){
             let array,string;
-            let path = './words/words' + this.letters.toString() + '.csv'
+            let path = './words/words' + this.letterCount.toString() + '.csv'
             let xmlhttp = new XMLHttpRequest();
             xmlhttp.open('GET', path, false);
             xmlhttp.send();
@@ -61,19 +61,19 @@ class Game{
         if(this.isCorrectLetterSetup() && this.isCorrectAttemptSetup()){
             let gameBoard = document.querySelector('#game');
             this.clearBoard(gameBoard);
-            let attempt,letter;
-            for(let i = 0; i<this.attempts; i++){
+            let attemptRowDiv,letterDiv;
+            for(let i = 0; i<this.maxAttempts; i++){
                 let attemptID = 'attempt' + i.toString();
-                attempt = document.createElement('div');
-                attempt.id = attemptID;
-                attempt.className = 'attempt';
-                for(let j = 0; j<this.letters; j++){
-                    letter = document.createElement('div');
-                    letter.id = attemptID + ' l' + j.toString();
-                    letter.className = 'letter-block';
-                    attempt.appendChild(letter);
+                attemptRowDiv = document.createElement('div');
+                attemptRowDiv.id = attemptID;
+                attemptRowDiv.className = 'attempt';
+                for(let j = 0; j<this.letterCount; j++){
+                    letterDiv = document.createElement('div');
+                    letterDiv.id = attemptID + ' l' + j.toString();
+                    letterDiv.className = 'letter-block';
+                    attemptRowDiv.appendChild(letterDiv);
                 }
-                gameBoard.appendChild(attempt);
+                gameBoard.appendChild(attemptRowDiv);
             }
         }
     }
@@ -112,7 +112,7 @@ class Game{
         key.className = 'delete';
         key.innerText = 'Del';
         key.onclick = () => {
-            this.guess.pop();
+            this.playersGuess.pop();
             this.clearGuessDisplay();
             this.displayGuess();
         };
@@ -137,9 +137,8 @@ class Game{
         }
     }
     addToGuess(text){
-        if(this.guess.length < this.letters){
-            this.guess.push(text);
-            console.log(this.guess);
+        if(this.playersGuess.length < this.letterCount){
+            this.playersGuess.push(text);
             this.displayGuess();
         }
     }
@@ -148,9 +147,9 @@ class Game{
     }
     displayGuess(){
         let attempt = document.getElementById(this.attemptID);
-        for(let i=0; i<this.guess.length; i++){
+        for(let i=0; i<this.playersGuess.length; i++){
             let letter = document.getElementById(this.attemptID + ' l' + i);
-            letter.innerText = this.guess[i];
+            letter.innerText = this.playersGuess[i];
         }
     }
     clearGuessDisplay(){
@@ -164,14 +163,15 @@ class Game{
     }
     submitGuess(){
         this.checkLetters();
+        this.updateKeys();
         this.nextAttempt();
     }
     checkLetters(){
-        let guess = this.guess;
+        let guess = this.playersGuess;
         for(let i=0; i<guess.length; i++){
             let boxID = this.attemptID + ' l' + i.toString();
             let box = document.getElementById(boxID);
-            let letter = guess[i];
+            //let letter = guess[i];
             if(this.isCorrectLetter(guess[i],i)){
                 box.classList.add('correct');
             } else if( this.isClose(guess[i])){
@@ -181,19 +181,33 @@ class Game{
             }
         }
     }
-    isCorrectLetter(guess, index){
+    isCorrectLetter(guessLetter, index){
         let word = this.word.split('');
-        if(guess == word[index]){return true;} else {return false;}
+        if(guessLetter == word[index]){return true;} else {return false;}
     }
-    isClose(guess){
+    isClose(guessLetter){
         let word = this.word.split('');
-        return word.includes(guess);
+        return word.includes(guessLetter);
+    }
+    updateKeys(){
+        let guessBoxes = document.getElementById(this.attemptID).childNodes;
+        let statuses = ['correct', 'incorrect', 'close'];
+        for(let box of guessBoxes){
+            let letter = box.innerText;
+            let key = document.getElementById(letter);
+            for(let status of statuses){
+                console.log(box.classList);
+                if([...box.classList].includes(status) && ![...key.classList].includes(status)){
+                    key.classList.add(status);
+                }
+            }
+        }
     }
     nextAttempt(){
-        if(this.currentAttempt < this.attempts){
+        if(this.currentAttempt < this.maxAttempts){
             this.currentAttempt++;
             this.setAttemptID();
-            this.guess = [];
+            this.playersGuess = [];
         }
     }
     cheat(){
@@ -208,13 +222,9 @@ class Game{
 
 
 function newGame(e){
-    let letters = document.getElementById('letters').value;
-    let attempts = document.getElementById('attempts').value;
-    let guess = document.getElementById('guess');
     let game = new Game();
-    game.letters = letters
-    game.attempts = attempts;
-    //guess.addEventListener()  How to know when this element is updated?
+    game.letterCount = document.getElementById('letterCount').value;
+    game.maxAttempts = document.getElementById('maxAttempts').value;
     game.setupGame();
     return game;
 }
