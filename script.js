@@ -1,41 +1,41 @@
-class Game{
-    constructor(){
+class Game {
+    constructor() {
         this.word = '';
         this.wordsArray = [];
-        this.randomIndex ;
+        this.randomIndex;
         this.maxAttempts;
         this.currentAttempt = '0';
         this.attemptID;
         this.letterCount;
         this.playersGuess = [];
     }
-    isCorrectLetterSetup(){
-        if(this.letterCount < 4 || this.letterCount > 8){
+    isCorrectLetterSetup() {
+        if (this.letterCount < 4 || this.letterCount > 8) {
             alert('letter count not set properly');
             return false;
         }
         return true;
     }
-    isCorrectAttemptSetup(){
-        if(this.maxAttempts < 2 || this.maxAttempts > 10){
+    isCorrectAttemptSetup() {
+        if (this.maxAttempts < 2 || this.maxAttempts > 10) {
             alert('Attempt count not set properly');
             return false;
         }
         return true;
     }
-    setRandomIndex(max = this.wordsArray.length){
-        if(max > 0){
+    setRandomIndex(max = this.wordsArray.length) {
+        if (max > 0) {
             this.randomIndex = Math.floor(Math.random() * max);
         }
     }
     setArray() {
-        if(this.isCorrectLetterSetup() && this.isCorrectAttemptSetup()){
-            let array,string;
+        if (this.isCorrectLetterSetup() && this.isCorrectAttemptSetup()) {
+            let array, string;
             let path = './words/words' + this.letterCount.toString() + '.csv'
             let xmlhttp = new XMLHttpRequest();
             xmlhttp.open('GET', path, false);
             xmlhttp.send();
-            if (xmlhttp.status==200) {
+            if (xmlhttp.status == 200) {
                 string = xmlhttp.responseText;
             }
             array = string.split(',');
@@ -44,10 +44,13 @@ class Game{
             alert('did not set array');
         }
     }
-    setWord(i=0){
-        if(this.wordsArray.length > 0 && this.randomIndex > -1){
+    setWord(i = 0) {
+        if (this.wordsArray.length > 0 && this.randomIndex > -1) {
             this.word = this.wordsArray[this.randomIndex].toUpperCase();
-        } else if(i < 10){
+            //For testing purposes only REMOVE LATER
+            this.word = 'ABBA'
+            //REMOVE ABBA WHEN DONE TESTING
+        } else if (i < 10) {
             this.setRandomIndex();
             this.setArray();
             console.log('setWord attempts - ' + i);
@@ -57,39 +60,39 @@ class Game{
             alert('word not set');
         }
     }
-    setupGameBoard(){
-        if(this.isCorrectLetterSetup() && this.isCorrectAttemptSetup()){
+    setupGameBoard() {
+        if (this.isCorrectLetterSetup() && this.isCorrectAttemptSetup()) {
             let gameBoard = document.querySelector('#game');
             this.clearBoard(gameBoard);
-            let attemptRowDiv,letterDiv;
-            for(let i = 0; i<this.maxAttempts; i++){
+            let attemptRowDiv, letterDiv;
+            for (let i = 0; i < this.maxAttempts; i++) {
                 let attemptID = 'attempt' + i.toString();
                 attemptRowDiv = document.createElement('div');
                 attemptRowDiv.id = attemptID;
                 attemptRowDiv.className = 'attempt';
-                for(let j = 0; j<this.letterCount; j++){
+                for (let j = 0; j < this.letterCount; j++) {
                     letterDiv = document.createElement('div');
                     letterDiv.id = attemptID + ' l' + j.toString();
-                    letterDiv.className = 'letter-block';
+                    letterDiv.setAttribute('letter', j.toString());
                     attemptRowDiv.appendChild(letterDiv);
                 }
                 gameBoard.appendChild(attemptRowDiv);
             }
         }
     }
-    setupKeyboard(){
+    setupKeyboard() {
         let keyboard = document.querySelector('#keyboard');
         this.clearBoard(keyboard);
         let rows = {
-            row1:'QWERTYUIOP',
-            row2:'ASDFGHJKL',
-            row3:'ZXCVBNM',
+            row1: 'QWERTYUIOP',
+            row2: 'ASDFGHJKL',
+            row3: 'ZXCVBNM',
         };
-        for(let row in rows){
+        for (let row in rows) {
             let div = document.createElement('div');
             div.id = row;
             div.className = 'keyRow';
-            for(let letter of rows[row]){
+            for (let letter of rows[row]) {
                 let key = document.createElement('div');
                 key.className = 'key';
                 key.innerText = letter;
@@ -99,13 +102,13 @@ class Game{
             keyboard.appendChild(div);
         }
     }
-    setupEnterDelete(){
+    setupEnterDelete() {
         let row3 = document.querySelector('#row3');
         let key = document.createElement('div');
 
         key.className = 'enter';
         key.innerText = 'Enter';
-        key.onclick = () => {this.submitPlayersGuess();};
+        key.onclick = () => { this.submitPlayersGuess(); };
         row3.appendChild(key);
 
         key = document.createElement('div');
@@ -118,7 +121,7 @@ class Game{
         };
         row3.appendChild(key);
     }
-    setupGame(){
+    setupGame() {
         this.setupGameBoard();
         this.setupKeyboard();
         this.setupEnterDelete();
@@ -127,101 +130,131 @@ class Game{
         this.setAttemptID();
         this.test();
     }
-    addKeyboardListeners(){
+    addKeyboardListeners() {
         let keys = document.getElementsByClassName('key');
-        for(let key of keys){
+        for (let key of keys) {
             key.onclick = (e) => {
                 let letter = e.path[0].innerText;
                 this.addToPlayersGuess(letter);
             };
         }
     }
-    addToPlayersGuess(text){
-        if(this.playersGuess.length < this.letterCount){
+    addToPlayersGuess(text) {
+        if (this.playersGuess.length < this.letterCount) {
             this.playersGuess.push(text);
             this.displayPlayersGuess();
         }
     }
-    setAttemptID(){
+    setAttemptID() {
         this.attemptID = 'attempt' + this.currentAttempt;
     }
-    displayPlayersGuess(){
+    displayPlayersGuess() {
         let attempt = document.getElementById(this.attemptID);
-        for(let i=0; i<this.playersGuess.length; i++){
+        for (let i = 0; i < this.playersGuess.length; i++) {
             let letter = document.getElementById(this.attemptID + ' l' + i);
             letter.innerText = this.playersGuess[i];
         }
     }
-    clearPlayersGuessDisplay(){
+    clearPlayersGuessDisplay() {
         let guessBoxes = document.getElementById(this.attemptID).childNodes;
-        for(let box of guessBoxes){ box.innerText = ''; }
+        for (let box of guessBoxes) { box.innerText = ''; }
     }
-    clearBoard(element){
-        while(element.firstChild){
+    clearBoard(element) {
+        while (element.firstChild) {
             element.removeChild(element.firstChild);
         }
     }
-    submitPlayersGuess(){
+    submitPlayersGuess() {
+        //Need to add an animation to the currentAttempt row to show the results one at a time
         this.checkLetters();
-        this.updateKeys();
+        if (this.isWordWithRepeatLetters()) {
+            console.log('letters repeat');
+            this.updateKeys();
+        } else {
+            this.updateKeys();
+        }
         this.nextAttempt();
     }
-    checkLetters(){
+    checkLetters() {
         let guess = this.playersGuess;
-        for(let i=0; i<guess.length; i++){
+        for (let i = 0; i < guess.length; i++) {
             let boxID = this.attemptID + ' l' + i.toString();
-            let box = document.getElementById(boxID);
-            //let letter = guess[i];
-            if(this.isCorrectLetter(guess[i],i)){
-                box.classList.add('correct');
-            } else if( this.isClose(guess[i])){
-                box.classList.add('close');
+            let guessBox = document.getElementById(boxID);
+            if (this.isCorrectLetter(guess[i], i)) {
+                guessBox.classList.add('correct');
+            } else if (this.isClose(guess[i])) {
+                guessBox.classList.add('close');
             } else {
-                box.classList.add('incorrect');
+                guessBox.classList.add('incorrect');
             }
         }
     }
-    isCorrectLetter(guessLetter, index){
+    isCorrectLetter(guessLetter, index) {
         let word = this.word.split('');
-        if(guessLetter == word[index]){return true;} else {return false;}
+        if (guessLetter == word[index]) { return true; } else { return false; }
     }
-    isClose(guessLetter){
+    isClose(guessLetter) {
         let word = this.word.split('');
         return word.includes(guessLetter);
     }
-    updateKeys(){
+    isWordWithRepeatLetters() {
+        let word = this.word.split('');
+        let wordSet = new Set(word);
+        return word.length != [...wordSet].length;
+    }
+    updateKeys() {
+        console.log('updateKeys');
+        for (let i = 0; i < this.letterCount; i++) {
+            let attemptLetters = document.querySelectorAll('[letter = "' + i + '"]')
+            for (let attempt of attemptLetters) {
+                //Maybe try adding all statuses to an array and check if includes correct
+                //then only update key that is correct
+                //if there are no correct them update keys that include close
+                //else all other keys are incorrect
+                if ([...attempt.classList].includes('correct')) {
+                    let letter = attempt.innerText;
+                    let key = document.getElementById(letter);
+                    key.classList.add('correct');
+                }
+            }
+        }
+
+
+        //This is not a good way to do this
+        /*
         let guessBoxes = document.getElementById(this.attemptID).childNodes;
         let statuses = ['correct', 'incorrect', 'close'];
         for(let box of guessBoxes){
             let letter = box.innerText;
             let key = document.getElementById(letter);
-            for(let status of statuses){
-                console.log(box.classList);
-                if([...box.classList].includes(status) && ![...key.classList].includes(status)){
-                    key.classList.add(status);
-                }
+            if([...key.classList].includes('correct')){
+                continue;
+            } else {
+                key.classList.add(box.classList[1]);
             }
         }
+        */
     }
-    nextAttempt(){
-        if(this.currentAttempt < this.maxAttempts){
+    nextAttempt() {
+        if (this.currentAttempt < this.maxAttempts) {
             this.currentAttempt++;
             this.setAttemptID();
             this.playersGuess = [];
         }
+        //TODO add something to make the player start a new game if they failed the last attempt
     }
-    cheat(){
+    cheat() {
         let cheat = document.getElementById('cheat');
-        cheat.onclick = () =>{ console.log(this.word) };
+        cheat.onclick = () => { console.log(this.word) };
     }
-    test(){
+    test() {
         //run in setup to test current method that is work in progress
         this.cheat();
     }
 }
 
 
-function newGame(e){
+function newGame(e) {
     let game = new Game();
     game.letterCount = document.getElementById('letterCount').value;
     game.maxAttempts = document.getElementById('maxAttempts').value;

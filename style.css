@@ -8,9 +8,10 @@ body {
 }
 
 #cheat {
-    width:auto;
+    width: auto;
     height: 300px;
 }
+
 #sidebar {
     margin-top: 20px;
     min-width: fit-content;
@@ -28,7 +29,7 @@ body {
     margin-top: 20px;
 }
 
-.letter-block {
+.attempt div {
     background-color: #3B3B3B;
     color: whitesmoke;
     font-size: 48px;
@@ -57,7 +58,7 @@ body {
 }
 
 
-input{
+input {
     width: 48px;
     height: 24px;
 }
@@ -80,7 +81,9 @@ form {
     font-size: 24px;
 }
 
-label, .button, p {
+label,
+.button,
+p {
     color: whitesmoke;
 }
 
@@ -100,7 +103,8 @@ label, .button, p {
     border-style: outset;
 }
 
-.enter, .delete{
+.enter,
+.delete {
     background-color: #3B3B3B;
     color: whitesmoke;
     min-width: 35px;
