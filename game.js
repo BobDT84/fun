@@ -204,18 +204,18 @@ class Game {
         //Need to add an animation to the currentAttempt row to show the results one at a time
         this.checkLetters();
         this.updateKeyHints();
-        if(this.isCorrectGuess()){
+        if (this.isCorrectGuess()) {
             alert('You WON!');
         } else {
             this.nextAttempt();
         }
     }
-    isCorrectGuess(){
+    isCorrectGuess() {
         let i = 0;
-        while(this.guessAccuracy[i] == 'correct'){
+        while (this.guessAccuracy[i] == 'correct') {
             i++;
         }
-        if(i == this.guessAccuracy.length){ return true; } else {return false;}
+        if (i == this.guessAccuracy.length) { return true; } else { return false; }
     }
     checkLetters() {
         let guess = this.playersGuess;
@@ -235,7 +235,7 @@ class Game {
         }
         console.log(this.guessAccuracy);
     }
-    changeKeyToIncorrect(letter){
+    changeKeyToIncorrect(letter) {
         let key = document.getElementById(letter);
         key.classList.add('incorrect');
     }
@@ -252,20 +252,20 @@ class Game {
         return word.length != [...wordSet].length;
     }
     updateKeyHints() {
-        console.log('updateKeyHints');
         let word = this.word.split('');
         let guess = this.playersGuess;
         let statusOf = {};
         for (let i = 0; i < word.length; i++) {
             let letter = guess[i];
-            if(!statusOf[letter]){ 
-                statusOf[letter] = this.guessAccuracy[i];
-            } else {
-                if(statusOf[letter] == 'correct' && this.guessAccuracy[i] == 'close'){
-                    statusOf[letter] = 'close';
+            if (word.includes(letter)) {
+                if (!statusOf[letter]) {
+                    statusOf[letter] = this.guessAccuracy[i];
+                } else if (word.indexOf(letter, 2) > 0) { //if there is a repeating letter
+                    if (statusOf[letter] == 'correct' && this.guessAccuracy[i] == 'close') {
+                        statusOf[letter] = 'close';
+                    }
                 }
             }
-            console.log(statusOf);
         }
         for (let letter in statusOf) {
             let key = document.getElementById(letter);
