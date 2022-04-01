@@ -29,8 +29,10 @@ body {
     margin-top: 20px;
 }
 
-.attempt div {
+.guess {
     background-color: #3B3B3B;
+}
+.attempt > div {
     color: whitesmoke;
     font-size: 48px;
     text-align: center;
@@ -103,8 +105,8 @@ p {
     border-style: outset;
 }
 
-.enter,
-.delete {
+#enter,
+#delete {
     background-color: #3B3B3B;
     color: whitesmoke;
     min-width: 35px;
