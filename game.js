@@ -90,6 +90,9 @@ class Game {
                 }
                 gameBoard.appendChild(attemptRowDiv);
             }
+            let answer = document.createElement('div');
+            answer.id = 'answer';
+            gameBoard.appendChild(answer);
         }
     }
     setupKeyboard() {
@@ -170,7 +173,6 @@ class Game {
         this.attemptID = 'attempt' + this.currentAttempt;
     }
     handleKeyPress(text) {
-        console.log(text);
         switch (true) {
             case 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.includes(text):
                 this.addToPlayersGuess(text);
@@ -206,8 +208,13 @@ class Game {
         this.updateKeyHints();
         if (this.isCorrectGuess()) {
             alert('You WON!');
-        } else {
+        }
+        console.log('Current Attempt ' + this.currentAttempt);
+        console.log('Max Attempts ' + (Number(this.maxAttempts)-1).toString());
+        if(this.currentAttempt < Number(this.maxAttempts)-1){
             this.nextAttempt();
+        } else {
+            this.gameLost();
         }
     }
     isCorrectGuess() {
@@ -216,6 +223,11 @@ class Game {
             i++;
         }
         if (i == this.guessAccuracy.length) { return true; } else { return false; }
+    }
+    gameLost(){
+        let answer = document.getElementById('answer');
+        answer.innerText = 'The word was ' + this.word;
+        alert('Sorry, you lost. Better luck next time.');
     }
     checkLetters() {
         let guess = this.playersGuess;

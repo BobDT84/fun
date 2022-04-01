@@ -32,7 +32,8 @@ body {
 .guess {
     background-color: #3B3B3B;
 }
-.attempt > div {
+
+.attempt>div {
     color: whitesmoke;
     font-size: 48px;
     text-align: center;
@@ -80,7 +81,7 @@ form {
 }
 
 .settings * {
-    font-size: 24px;
+    font-size: 16px;
 }
 
 label,
@@ -129,4 +130,9 @@ p {
 
 .incorrect {
     background-color: #1B1B1B;
+}
+
+#answer {
+    color: whitesmoke;
+    font-size: 24px;
 }
