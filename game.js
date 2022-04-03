@@ -9,6 +9,7 @@ class Game {
         this.letterCount;
         this.playersGuess = [];
         this.guessAccuracy = [];
+        this.guessLetterStatus = {};
     }
     isCorrectLetterSetup() {
         if (this.letterCount < 4 || this.letterCount > 8) {
@@ -69,7 +70,16 @@ class Game {
     setGuessAccuracy() {
         this.guessAccuracy = Array(+this.letterCount).fill(0);
         //unary operator(+) to convert string to number
-        console.log(this.guessAccuracy);
+    }
+    setGuessLetterStatus(word = this.word.split('')) {
+        this.guessLetterStatus = {};
+        for (let letter of word) {
+            if (this.guessLetterStatus[letter]) {
+                this.guessLetterStatus[letter][0] += 1
+            } else {
+                this.guessLetterStatus[letter] = [1, 0];
+            }
+        }
     }
     setupGameBoard() {
         if (this.isCorrectLetterSetup() && this.isCorrectAttemptSetup()) {
@@ -125,7 +135,7 @@ class Game {
         key.innerText = 'Enter';
         key.onclick = () => { this.submitPlayersGuess(); };
         row3.appendChild(key);
-        
+
         key = document.createElement('div');
         key.id = 'delete';
         key.innerText = 'Del';
@@ -207,11 +217,22 @@ class Game {
             alert('You WON!');
         }
         console.log('Current Attempt ' + this.currentAttempt);
-        console.log('Max Attempts ' + (Number(this.maxAttempts)-1).toString());
-        if(this.currentAttempt < Number(this.maxAttempts)-1){
+        console.log('Max Attempts ' + (Number(this.maxAttempts) - 1).toString());
+        if (this.currentAttempt < Number(this.maxAttempts) - 1) {
             this.nextAttempt();
         } else {
             this.gameLost();
+        }
+    }
+    updateGuessLetterStatus() {
+        let word = this.word.split('');
+        this.setGuessLetterStatus();
+        for (let i = 0; i < word.length; i++) {
+            let letter = word[i];
+            let status = this.guessAccuracy[i];
+            if (status == 'correct') {
+                this.guessLetterStatus[letter][1] += 1;
+            }
         }
     }
     isCorrectGuess() {
@@ -221,7 +242,7 @@ class Game {
         }
         if (i == this.guessAccuracy.length) { return true; } else { return false; }
     }
-    gameLost(){
+    gameLost() {
         let answer = document.getElementById('answer');
         answer.innerText = 'The word was ' + this.word;
         alert('Sorry, you lost. Better luck next time.');
@@ -242,7 +263,6 @@ class Game {
                 this.changeKeyToIncorrect(guessBox.innerText);
             }
         }
-        console.log(this.guessAccuracy);
     }
     changeKeyToIncorrect(letter) {
         let key = document.getElementById(letter);
@@ -255,30 +275,20 @@ class Game {
     isClose(guessLetter) {
         return this.word.includes(guessLetter);
     }
-    isWordWithRepeatLetters() {
-        let word = this.word.split('');
-        let wordSet = new Set(word);
-        return word.length != [...wordSet].length;
-    }
     updateKeyHints() {
-        let word = this.word.split('');
-        let guess = this.playersGuess;
-        let statusOf = {};
-        for (let i = 0; i < word.length; i++) {
-            let letter = guess[i];
-            if (word.includes(letter)) {
-                if (!statusOf[letter]) {
-                    statusOf[letter] = this.guessAccuracy[i];
-                } else if (word.indexOf(letter, 2) > 0) { //if there is a repeating letter
-                    if (statusOf[letter] == 'correct' && this.guessAccuracy[i] == 'close') {
-                        statusOf[letter] = 'close';
-                    }
-                }
-            }
-        }
-        for (let letter in statusOf) {
+        this.updateGuessLetterStatus();
+        console.log(this.guessLetterStatus);
+        
+        for(let letter in this.guessLetterStatus){
+            let status = this.guessLetterStatus[letter];
             let key = document.getElementById(letter);
-            key.className = 'key ' + statusOf[letter];
+            if(status[0] == status[1]){
+                key.className = 'key correct';
+            } else if(status[1] > 0){
+                key.className = 'key close';
+            } else if(this.playersGuess.includes(letter)){
+                key.className = 'key close';
+            }
         }
     }
 
