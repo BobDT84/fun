@@ -66,3 +66,8 @@ with open('allWords.json', 'w') as f:
 
     
 print(json.dumps(words4[:10]))
+print(len(words4))
+print(len(words5))
+print(len(words6))
+print(len(words7))
+print(len(words8))
