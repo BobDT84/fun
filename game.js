@@ -1,7 +1,7 @@
 class Game {
     constructor() {
         this.word = '';
-        this.wordsArray = [];
+        this.arrayOfWords = [];
         this.randomIndex;
         this.maxAttempts;
         this.currentAttempt = '0';
@@ -24,7 +24,7 @@ class Game {
         }
         return true;
     }
-    setRandomIndex(max = this.wordsArray.length) {
+    setRandomIndex(max = this.arrayOfWords.length) {
         if (max > 0) {
             this.randomIndex = Math.floor(Math.random() * max);
         }
@@ -40,14 +40,14 @@ class Game {
                 string = xmlhttp.responseText;
             }
             array = string.split(',');
-            this.wordsArray = array;
+            this.arrayOfWords = array;
         } else {
             alert('did not set array');
         }
     }
     setWord(i = 0) {
-        if (this.wordsArray.length > 0 && this.randomIndex > -1) {
-            this.word = this.wordsArray[this.randomIndex].toUpperCase();
+        if (this.arrayOfWords.length > 0 && this.randomIndex > -1) {
+            this.word = this.arrayOfWords[this.randomIndex].toUpperCase();
             //For testing purposes only REMOVE LATER
             //this.word = 'ABBA'
             //REMOVE ABBA WHEN DONE TESTING
@@ -125,10 +125,7 @@ class Game {
         key.innerText = 'Enter';
         key.onclick = () => { this.submitPlayersGuess(); };
         row3.appendChild(key);
-        () => { document.getElementById('enter').focus(); }
-        //Change of focus has to be in a function expression otherwise the focus reverts
-        //back to the new game button and pressing the enter key will start a new game
-
+        
         key = document.createElement('div');
         key.id = 'delete';
         key.innerText = 'Del';

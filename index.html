@@ -10,27 +10,28 @@
 </head>
 
 <body>
-    <div id="sidebar">
-        <div class="settings">
-            <p class="sidebarTitle">NEW GAME SETTINGS</p>
-            <label for="letters">Word Size</label>
-            <input type="text" id="letterCount" name="letters" value=5 required>
-            <label for="rounds">Attempts</label>
-            <input type="text" id="maxAttempts" name="attempts" value=6 required>
-            <button type="button" id="newGame" class="button">New Game</button>
-            <div id="cheat"></div>
-            <div id="focus"></div>
+    <div id="game-container">
+        <div class="settings-container">
+            <p class="settings-title">NEW GAME SETTINGS</p>
+            <div class="settings-input">
+                <label for="letters">Word Size: </label>
+                <input type="text" id="letterCount" name="letters" value=5 required>
+                <label for="rounds">Attempts: </label>
+                <input type="text" id="maxAttempts" name="attempts" value=6 required>
+                <button type="button" id="newGame" class="new-game">New Game</button>
+            </div>
         </div>
+        <div id="game">
+            
+        </div>
+        <div id="keyboard">
+            
+        </div>
+        <div id="guess"></div>
+        <div id="cheat"></div>
+        <script src="script.js"></script>
+        <script src="game.js"></script>
     </div>
-    <div id="game">
-
-    </div>
-    <div id="keyboard">
-
-    </div>
-    <div id="guess"></div>
-    <script src="script.js"></script>
-    <script src="game.js"></script>
 </body>
 
 </html>
