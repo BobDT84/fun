@@ -1,7 +1,12 @@
 import csv
 import json
+from operator import concat
+import os
+import re
 
-file = 'words.txt'
+file = '/words/words.txt'
+path = os.getcwd()
+filepath = concat(path,file)
 
 words = []
 words4 = []
@@ -10,9 +15,8 @@ words6 = []
 words7 = []
 words8 = []
 
-with open(file, 'r') as wordsFile:
+with open(filepath, 'r') as wordsFile:
     csvreader = csv.reader(wordsFile)
-
     for x in wordsFile:
         words.append(x)
 
@@ -23,9 +27,14 @@ for i,word in enumerate(words):
     words[i] = word
 
 words = list(set(words))
+pattern = r'[a-zA-Z]'
+
 
 for word in words:
     if word[0].isupper():
+        continue
+    if len(re.findall(pattern, word)) != len(word):
+        print(word)
         continue
     if len(word) == 4:
         words4.append(word)
