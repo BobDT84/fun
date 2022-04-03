@@ -3,7 +3,6 @@ function newGame(e) {
     game.letterCount = document.getElementById('letterCount').value;
     game.maxAttempts = document.getElementById('maxAttempts').value;
     game.setupGame();
-    document.getElementById('focus').focus();
     return game;
 }
 

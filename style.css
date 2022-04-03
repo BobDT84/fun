@@ -9,31 +9,32 @@ body {
 
 .settings-container {
     display: flex;
+    margin: 0px 20px;
     flex-wrap: wrap;
     justify-content: center;
-    justify-items: center;
 }
 
 .settings-title {
     width: 100%;
     margin: 0px auto;
     text-align: center;
-    font-size: 36px;
+    font-size: 24px;
     color: whitesmoke;
 }
 
 .settings-input {
-    font-size: 24px;
+    font-size: 14px;
     display: flex;
     align-items: center;
     gap: 5px;
+    white-space: nowrap;
     color: whitesmoke;
 }
 
 input {
-    width: 24px;
+    width: 14px;
     height: fit-content;
-    font-size: 24px;
+    font-size: 14px;
     text-align: center;
 }
 
@@ -42,7 +43,7 @@ input {
     height: fit-content;
     background-color: #3B3B3B;
     color: whitesmoke;
-    font-size: 24px;
+    font-size: 14px;
 }
 
 #cheat {
