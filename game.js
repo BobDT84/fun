@@ -10,6 +10,7 @@ class Game {
         this.playersGuess = [];
         this.guessAccuracy = [];
         this.guessLetterStatus = {};
+        this.playing = true;
     }
     isCorrectLetterSetup() {
         if (this.letterCount < 4 || this.letterCount > 8) {
@@ -151,6 +152,7 @@ class Game {
         this.setWord();
         this.setAttemptID();
         this.setGuessAccuracy();
+        this.playing = true;
         this.test();
     }
     addKeyPressListeners() {
@@ -166,12 +168,14 @@ class Game {
         }
     }
     deletePreviousLetter() {
-        this.playersGuess.pop();
-        this.clearPlayersGuessDisplay();
-        this.displayPlayersGuess();
+        if(this.playing){
+            this.playersGuess.pop();
+            this.clearPlayersGuessDisplay();
+            this.displayPlayersGuess();A
+        }
     }
     addToPlayersGuess(text) {
-        if (this.playersGuess.length < this.letterCount) {
+        if (this.playing && this.playersGuess.length < this.letterCount) {
             this.playersGuess.push(text);
             this.displayPlayersGuess();
         }
@@ -211,17 +215,18 @@ class Game {
     }
     submitPlayersGuess() {
         //Need to add an animation to the currentAttempt row to show the results one at a time
-        this.checkLetters();
-        this.updateKeyHints();
-        if (this.isCorrectGuess()) {
-            alert('You WON!');
-        }
-        console.log('Current Attempt ' + this.currentAttempt);
-        console.log('Max Attempts ' + (Number(this.maxAttempts) - 1).toString());
-        if (this.currentAttempt < Number(this.maxAttempts) - 1) {
-            this.nextAttempt();
-        } else {
-            this.gameLost();
+        if(this.playing){
+            console.log('Current Attempt ' + this.currentAttempt);
+            console.log('Max Attempts ' + (Number(this.maxAttempts) - 1).toString());
+            this.checkLetters();
+            this.updateKeyHints();
+            if (this.isCorrectGuess()) {
+                this.gameWon();
+            } else if (this.currentAttempt < Number(this.maxAttempts) - 1) {
+                this.nextAttempt();
+            } else {
+                this.gameLost();
+            }
         }
     }
     updateGuessLetterStatus() {
@@ -246,6 +251,11 @@ class Game {
         let answer = document.getElementById('answer');
         answer.innerText = 'The word was ' + this.word;
         alert('Sorry, you lost. Better luck next time.');
+        this.playing = false;
+    }
+    gameWon(){
+        alert('You WON!');
+        this.playing = false;
     }
     checkLetters() {
         let guess = this.playersGuess;
