@@ -1,5 +1,7 @@
 function newGame(e) {
-    if(e.pointerId == 0){
+    e.preventDefault();
+    console.log(e);
+    if(e.pointerId >= 0){
         let game = new Game();
         game.letterCount = document.getElementById('letterCount').value;
         game.maxAttempts = document.getElementById('maxAttempts').value;
@@ -12,4 +14,4 @@ function main() {
     newGameButton.addEventListener('click', newGame);
 }
 
-main()
+main();

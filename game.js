@@ -50,14 +50,6 @@ class Game {
     setWord(i = 0) {
         if (this.arrayOfWords.length > 0 && this.randomIndex > -1) {
             this.word = this.arrayOfWords[this.randomIndex].toUpperCase();
-            //For testing purposes only REMOVE LATER
-            //this.word = 'ABBA'
-            //REMOVE ABBA WHEN DONE TESTING
-            //REMOVE ABBA WHEN DONE TESTING
-            //REMOVE ABBA WHEN DONE TESTING
-            //REMOVE ABBA WHEN DONE TESTING
-            //REMOVE ABBA WHEN DONE TESTING
-            //REMOVE ABBA WHEN DONE TESTING
         } else if (i < 10) {
             this.setRandomIndex();
             this.setArray();

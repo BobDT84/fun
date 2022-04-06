@@ -61,8 +61,6 @@ for i in range(4,9):
         write = csv.writer(f)
         write.writerow(wordsDict[wordGroup])
 
-with open('allWords.json', 'w') as f:
-    json.dump(wordsDict,f)
 
     
 print(json.dumps(words4[:10]))

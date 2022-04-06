@@ -38,6 +38,10 @@ input {
     text-align: center;
 }
 
+#newGame {
+    width: fit-content;
+    height: fit-content;
+}
 .new-game {
     width: fit-content;
     height: fit-content;
