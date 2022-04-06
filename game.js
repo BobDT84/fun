@@ -277,21 +277,18 @@ class Game {
     }
     updateKeyHints() {
         this.updateGuessLetterStatus();
-        console.log(this.guessLetterStatus);
-        
-        for(let letter in this.guessLetterStatus){
+        for (let letter in this.guessLetterStatus) {
             let status = this.guessLetterStatus[letter];
             let key = document.getElementById(letter);
-            if(status[0] == status[1]){
+            if (status[0] == status[1]) {
                 key.className = 'key correct';
-            } else if(status[1] > 0){
+            } else if (status[1] > 0) {
                 key.className = 'key close';
-            } else if(this.playersGuess.includes(letter)){
+            } else if (this.playersGuess.includes(letter)) {
                 key.className = 'key close';
             }
         }
     }
-
     nextAttempt() {
         if (this.currentAttempt < this.maxAttempts) {
             this.currentAttempt++;
