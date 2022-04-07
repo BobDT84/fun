@@ -11,7 +11,7 @@
 
 <body>
     <div id="game-container">
-        <p class="test-page"><a href="testing_page.html" class="test-page">Try the unstable version with new features</a></p>
+        <p class="test-page"><a href="index.html" class="test-page">Back to original version</a></p>
         <div class="settings-container">
             <p class="settings-title">NEW GAME SETTINGS</p>
             <div class="settings-input">
@@ -19,6 +19,8 @@
                 <input type="text" id="wordSize" name="wordSize" value=5 required>
                 <label for="maxAttempts">Attempts: </label>
                 <input type="text" id="maxAttempts" name="maxAttempts" value=6 required>
+                <label for="strictMode">Strict Mode</label>
+                <input type="checkbox" id="strictMode" value="true" checked> 
                 <button id="newGame" class="new-game">New Game</button>
             </div>
         </div>
@@ -29,7 +31,7 @@
             
         </div>
         <div id="guess"></div>
-        <script src="script.js"></script>
+        <script src="testing_script.js"></script>
         <script src="game.js"></script>
     </div>
 </body>

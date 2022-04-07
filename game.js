@@ -1,19 +1,20 @@
 class Game {
-    constructor() {
+    constructor(wordSize, maxAttempts, strictMode = false) {
         this.word = '';
         this.arrayOfWords = [];
         this.randomIndex;
-        this.maxAttempts;
+        this.maxAttempts = maxAttempts;
         this.currentAttempt = '0';
         this.attemptID;
-        this.letterCount;
+        this.wordSize = wordSize;
         this.playersGuess = [];
         this.guessAccuracy = [];
         this.guessLetterStatus = {};
         this.playing = true;
+        this.strictMode = strictMode;
     }
     isCorrectLetterSetup() {
-        if (this.letterCount < 4 || this.letterCount > 8) {
+        if (this.wordSize < 4 || this.wordSize > 8) {
             alert('letter count not set properly');
             return false;
         }
@@ -34,7 +35,7 @@ class Game {
     setArray() {
         if (this.isCorrectLetterSetup() && this.isCorrectAttemptSetup()) {
             let array, string;
-            let path = './words/words' + this.letterCount.toString() + '.csv'
+            let path = './words/words' + this.wordSize.toString() + '.csv'
             let xmlhttp = new XMLHttpRequest();
             xmlhttp.open('GET', path, false);
             xmlhttp.send();
@@ -61,7 +62,7 @@ class Game {
         }
     }
     setGuessAccuracy() {
-        this.guessAccuracy = Array(+this.letterCount).fill(0);
+        this.guessAccuracy = Array(+this.wordSize).fill(0);
         //unary operator(+) to convert string to number
     }
     setGuessLetterStatus(word = this.word.split('')) {
@@ -84,7 +85,7 @@ class Game {
                 attemptRowDiv = document.createElement('div');
                 attemptRowDiv.id = attemptID;
                 attemptRowDiv.className = 'attempt';
-                for (let j = 0; j < this.letterCount; j++) {
+                for (let j = 0; j < this.wordSize; j++) {
                     letterDiv = document.createElement('div');
                     letterDiv.className = 'guess';
                     letterDiv.id = attemptID + ' l' + j.toString();
@@ -167,7 +168,7 @@ class Game {
         }
     }
     addToPlayersGuess(text) {
-        if (this.playing && this.playersGuess.length < this.letterCount) {
+        if (this.playing && this.playersGuess.length < this.wordSize) {
             this.playersGuess.push(text);
             this.displayPlayersGuess();
         }
@@ -208,17 +209,22 @@ class Game {
     submitPlayersGuess() {
         //Need to add an animation to the currentAttempt row to show the results one at a time
         if(this.playing){
-            console.log('Current Attempt ' + this.currentAttempt);
-            console.log('Max Attempts ' + (Number(this.maxAttempts) - 1).toString());
-            this.checkLetters();
-            this.updateKeyHints();
-            if (this.isCorrectGuess()) {
-                this.gameWon();
-            } else if (this.currentAttempt < Number(this.maxAttempts) - 1) {
-                this.nextAttempt();
+            if(this.strictMode){
+                this.checkWithStrictMode();
             } else {
-                this.gameLost();
+                this.processGuess();
             }
+        }
+    }
+    processGuess(){
+        this.checkLetters();
+        this.updateKeyHints();
+        if (this.isCorrectGuess()) {
+            this.gameWon();
+        } else if (this.currentAttempt < Number(this.maxAttempts) - 1) {
+            this.nextAttempt();
+        } else {
+            this.gameLost();
         }
     }
     updateGuessLetterStatus() {
@@ -232,6 +238,20 @@ class Game {
             }
         }
     }
+    checkWithStrictMode(){
+        let guess = this.playersGuess.join('').toLowerCase();
+        let word = this.word;
+        let wordsArray = this.arrayOfWords;
+        console.log(`Guess length ${this.playersGuess.length}`);
+        console.log(`Word length ${this.wordSize}`);
+        if(guess.length != this.word.length){
+            alert('Not a valid guess.  Word length not long enough');
+        } else if (!wordsArray.includes(guess)){
+            alert('Not a valid word.  Word not found.');
+        } else {
+            this.processGuess();
+        }
+    }
     isCorrectGuess() {
         let i = 0;
         while (this.guessAccuracy[i] == 'correct') {
@@ -241,7 +261,7 @@ class Game {
     }
     gameLost() {
         let answer = document.getElementById('answer');
-        answer.innerText = 'The word was ' + this.word;
+        answer.innerText = `The word was ${this.word}.  Index reference is ${this.randomIndex}`;
         alert('Sorry, you lost. Better luck next time.');
         this.playing = false;
     }
@@ -299,12 +319,9 @@ class Game {
         }
         //TODO add something to make the player start a new game if they failed the last attempt
     }
-    cheat() {
-        let cheat = document.getElementById('cheat');
-        cheat.onclick = () => { console.log(this.word) };
-    }
     test() {
         //run in setup to test current method that is work in progress
-        this.cheat();
+        console.log(this.word);
+        console.log(this.strictMode);
     }
 }

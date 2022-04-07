@@ -2,6 +2,12 @@ body {
     background-color: #2B2B2B;
 }
 
+.test-page {
+    text-align: center;
+    margin: auto 0px;
+    display: flex;
+    justify-content: center;
+}
 #game-container {
     margin: 0px auto;
     width: fit-content;
