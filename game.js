@@ -1,5 +1,5 @@
 class Game {
-    constructor(wordSize, maxAttempts, strictMode = false) {
+    constructor(wordSize, maxAttempts, modes = []) {
         this.word = '';
         this.arrayOfWords = [];
         this.randomIndex;
@@ -11,7 +11,14 @@ class Game {
         this.guessAccuracy = [];
         this.guessLetterStatus = {};
         this.playing = true;
-        this.strictMode = strictMode;
+        this.modes = modes;
+        this.strictMode = false;
+        this.tenWordMode = false;
+    }
+    setGameModes(){
+        for(let mode of this.modes){
+            //toggle modes from false to true for every mode listed in modes
+        }
     }
     isCorrectLetterSetup() {
         if (this.wordSize < 4 || this.wordSize > 8) {
