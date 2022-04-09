@@ -7,6 +7,7 @@ import re
 file = '/words/words.txt'
 path = os.getcwd()
 filepath = concat(path,file)
+print(path)
 
 words = []
 words4 = []
@@ -14,6 +15,8 @@ words5 = []
 words6 = []
 words7 = []
 words8 = []
+
+difficultWords = ['endue','synod']
 
 with open(filepath, 'r') as wordsFile:
     csvreader = csv.reader(wordsFile)
@@ -29,12 +32,14 @@ for i,word in enumerate(words):
 words = list(set(words))
 pattern = r'[a-zA-Z]'
 
+for word in difficultWords:
+    if word in words:
+        words.remove(word)
 
 for word in words:
     if word[0].isupper():
         continue
     if len(re.findall(pattern, word)) != len(word):
-        print(word)
         continue
     if len(word) == 4:
         words4.append(word)
@@ -57,13 +62,13 @@ wordsDict = {
 for i in range(4,9):
     wordGroup = 'words' + str(i)
     file = wordGroup + '.csv'
-    with open(file, 'w') as f:
+    path = os.getcwd() + '/words/'
+    filepath = concat(path, file)
+    with open(filepath, 'w') as f:
         write = csv.writer(f)
         write.writerow(wordsDict[wordGroup])
 
 
-    
-print(json.dumps(words4[:10]))
 print(len(words4))
 print(len(words5))
 print(len(words6))

@@ -15,4 +15,5 @@ with open(filepath, 'r') as wordsFile:
     for words in wordsFile:
         words5 = words.split(',')
 
-print(words5[342])
+print(words5[4355])
+print('endue' in words)
