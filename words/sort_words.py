@@ -4,27 +4,34 @@ from operator import concat
 import os
 import re
 
-file = '/words/words.txt'
-path = os.getcwd()
-filepath = concat(path,file)
-print(path)
-
 words = []
+difficultWords = []
 words4 = []
 words5 = []
 words6 = []
 words7 = []
 words8 = []
 
-difficultWords = ['endue','synod']
+def openFile(filepath):
+    array = []
+    with open(filepath, 'r') as wordsFile:
+        csvreader = csv.reader(wordsFile)
+        for x in wordsFile:
+            array.append(x.replace('\n',''))
+    return array
 
-with open(filepath, 'r') as wordsFile:
-    csvreader = csv.reader(wordsFile)
-    for x in wordsFile:
-        words.append(x)
+wordsFile = 'words.txt'
+difficultFile = 'difficultWords.txt'
+path = os.getcwd() + '/words/'
+wordsFilepath = concat(path,wordsFile)
+difficultFilepath = concat(path,difficultFile)
+words = openFile(wordsFilepath)
+difficultWords = openFile (difficultFilepath)
+print(path)
+print(difficultWords)
+
 
 for i,word in enumerate(words):
-    word = word.replace('\n','')
     if word.endswith("'s"):
         word = word.replace("'s",'')
     words[i] = word
