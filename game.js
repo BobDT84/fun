@@ -1,5 +1,5 @@
 class Game {
-    constructor(wordSize, maxAttempts, modes = []) {
+    constructor(wordSize, maxAttempts, activatedModes = []) {
         this.word = '';
         this.arrayOfWords = [];
         this.randomIndex;
@@ -11,13 +11,19 @@ class Game {
         this.guessAccuracy = [];
         this.guessLetterStatus = {};
         this.playing = true;
-        this.modes = modes;
-        this.strictMode = false;
-        this.tenWordMode = false;
+        this.activatedModes = activatedModes;
     }
-    setGameModes(){
-        for(let mode of this.modes){
-            //toggle modes from false to true for every mode listed in modes
+    setGameModeStatus() {
+        //toggle modes from false to true for every mode listed in activatedModes
+        let modes = {
+            strict: 'strictMode',
+            fiveWord: 'fiveWordMode',
+        };
+        let listOfModes = Object.keys(modes);
+        for (let mode of this.activatedModes) {
+            if (listOfModes.includes(mode)) {
+                this[modes[mode]] = true;
+            }
         }
     }
     isCorrectLetterSetup() {
@@ -39,7 +45,7 @@ class Game {
             this.randomIndex = Math.floor(Math.random() * max);
         }
     }
-    setArray() {
+    setArrayOfWords() {
         if (this.isCorrectLetterSetup() && this.isCorrectAttemptSetup()) {
             let array, string;
             let path = './words/words' + this.wordSize.toString() + '.csv'
@@ -60,7 +66,7 @@ class Game {
             this.word = this.arrayOfWords[this.randomIndex].toUpperCase();
         } else if (i < 10) {
             this.setRandomIndex();
-            this.setArray();
+            //this.setArrayOfWords();
             console.log('setWord attempts - ' + i);
             i++;
             this.setWord(i);
@@ -82,17 +88,17 @@ class Game {
             }
         }
     }
-    setupGameBoard() {
+    setupGameBoard(wordSize = this.wordSize, maxAttempts = this.maxAttempts) {
         if (this.isCorrectLetterSetup() && this.isCorrectAttemptSetup()) {
             let gameBoard = document.querySelector('#game');
             this.clearBoard(gameBoard);
             let attemptRowDiv, letterDiv;
-            for (let i = 0; i < this.maxAttempts; i++) {
+            for (let i = 0; i < maxAttempts; i++) {
                 let attemptID = 'attempt' + i.toString();
                 attemptRowDiv = document.createElement('div');
                 attemptRowDiv.id = attemptID;
                 attemptRowDiv.className = 'attempt';
-                for (let j = 0; j < this.wordSize; j++) {
+                for (let j = 0; j < wordSize; j++) {
                     letterDiv = document.createElement('div');
                     letterDiv.className = 'guess';
                     letterDiv.id = attemptID + ' l' + j.toString();
@@ -101,9 +107,9 @@ class Game {
                 }
                 gameBoard.appendChild(attemptRowDiv);
             }
-            let answer = document.createElement('div');
-            answer.id = 'answer';
-            gameBoard.appendChild(answer);
+            let message = document.createElement('div');
+            message.id = 'message';
+            gameBoard.appendChild(message);
         }
     }
     setupKeyboard() {
@@ -143,12 +149,27 @@ class Game {
         key.onclick = () => { this.deletePreviousLetter(); };
         row3.appendChild(key);
     }
-    setupGame() {
+    setupFiveWordMode() {
+        this.totalAttempts = Number(this.maxAttempts) * 5;
+        this.attemptsUsed = 0;
+        this.fiveWords = [];
+    }
+    setupNewGame() {
+        this.setGameModeStatus();
+        this.resetGame();
+        this.addKeyPressListeners();
+        if (this.fiveWordMode) { this.setupFiveWordMode(); }
+        this.test();
+    }
+    resetGame() {
+        this.currentAttempt = '0';
+        this.playersGuess = [];
+        this.guessAccuracy = [];
+        this.guessLetterStatus = {};
         this.setupGameBoard();
         this.setupKeyboard();
         this.setupEnterDelete();
         this.addKeyClickListeners();
-        this.addKeyPressListeners();
         this.setWord();
         this.setAttemptID();
         this.setGuessAccuracy();
@@ -156,7 +177,7 @@ class Game {
         this.test();
     }
     addKeyPressListeners() {
-        document.onkeydown = (e) => { this.handleKeyPress(e.key.toUpperCase()) };
+        document.onkeydown = (e) => { this.handleKeyPress(e.key.toUpperCase())};
     }
     addKeyClickListeners() {
         let keys = document.getElementsByClassName('key');
@@ -168,10 +189,10 @@ class Game {
         }
     }
     deletePreviousLetter() {
-        if(this.playing){
+        if (this.playing) {
             this.playersGuess.pop();
             this.clearPlayersGuessDisplay();
-            this.displayPlayersGuess();A
+            this.displayPlayersGuess();
         }
     }
     addToPlayersGuess(text) {
@@ -195,13 +216,12 @@ class Game {
                 this.submitPlayersGuess();
                 break;
         }
-
     }
-    displayPlayersGuess() {
-        let attempt = document.getElementById(this.attemptID);
-        for (let i = 0; i < this.playersGuess.length; i++) {
-            let letter = document.getElementById(this.attemptID + ' l' + i);
-            letter.innerText = this.playersGuess[i];
+    displayPlayersGuess(playersGuess = this.playersGuess, currentAttempt = this.currentAttempt) {
+        let attemptID = `attempt${currentAttempt}`;
+        for (let i = 0; i < playersGuess.length; i++) {
+            let letter = document.getElementById(attemptID + ' l' + i);
+            letter.innerText = playersGuess[i];
         }
     }
     clearPlayersGuessDisplay() {
@@ -214,16 +234,15 @@ class Game {
         }
     }
     submitPlayersGuess() {
-        //Need to add an animation to the currentAttempt row to show the results one at a time
-        if(this.playing){
-            if(this.strictMode){
+        if (this.playing) {
+            if (this.strictMode) {
                 this.checkWithStrictMode();
             } else {
                 this.processGuess();
             }
         }
     }
-    processGuess(){
+    processGuess() {
         this.checkLetters();
         this.updateKeyHints();
         if (this.isCorrectGuess()) {
@@ -245,15 +264,13 @@ class Game {
             }
         }
     }
-    checkWithStrictMode(){
+    checkWithStrictMode() {
         let guess = this.playersGuess.join('').toLowerCase();
         let word = this.word;
         let wordsArray = this.arrayOfWords;
-        console.log(`Guess length ${this.playersGuess.length}`);
-        console.log(`Word length ${this.wordSize}`);
-        if(guess.length != this.word.length){
+        if (guess.length != this.word.length) {
             alert('Not a valid guess.  Word length not long enough');
-        } else if (!wordsArray.includes(guess)){
+        } else if (!wordsArray.includes(guess)) {
             alert('Not a valid word.  Word not found.');
         } else {
             this.processGuess();
@@ -267,14 +284,23 @@ class Game {
         if (i == this.guessAccuracy.length) { return true; } else { return false; }
     }
     gameLost() {
-        let answer = document.getElementById('answer');
-        answer.innerText = `The word was ${this.word}.  Index reference is ${this.randomIndex}`;
-        alert('Sorry, you lost. Better luck next time.');
-        this.playing = false;
+        if (this.fiveWordMode) {
+            this.attemptsUsed++;
+            this.nextWordOfFiveWord();
+        } else {
+            this.writeMessage(`The word was ${this.word}.  Index reference is ${this.randomIndex}`);
+            alert('Sorry, you lost. Better luck next time.');
+            this.playing = false;
+        }
     }
-    gameWon(){
-        alert('You WON!');
-        this.playing = false;
+    gameWon() {
+        if (this.fiveWordMode) {
+            this.attemptsUsed++;
+            this.nextWordOfFiveWord();
+        } else {
+            alert('You WIN!');
+            this.playing = false;
+        }
     }
     checkLetters() {
         let guess = this.playersGuess;
@@ -320,15 +346,63 @@ class Game {
     }
     nextAttempt() {
         if (this.currentAttempt < this.maxAttempts) {
+            if (this.fiveWordMode) { this.attemptsUsed++ }
             this.currentAttempt++;
             this.setAttemptID();
             this.playersGuess = [];
         }
-        //TODO add something to make the player start a new game if they failed the last attempt
+    }
+    nextWordOfFiveWord() {
+        setTimeout(alert('Ready for the next word?'), 1000);
+        let word = this.word + (+this.currentAttempt + 1).toString();
+        //unary operator to convert currentAttempt from string to number
+        this.fiveWords.push(word);
+        if (this.fiveWords.length < 5) {
+            this.setRandomIndex();
+            this.resetGame();
+        } else {
+            this.endFiveWord();
+        }
+    }
+    fiveWordFormatGameBoard(column) {
+        column--;
+        for (let i = 0; i < 5; i++) {
+            let id = `attempt${i} l${column}`;
+            let box = document.getElementById(id);
+            box.classList.add('guessCount');
+        }
+        let header = document.createElement('div');
+        let wordHeader = document.createElement('span')
+        let attemptHeader = document.createElement('span')
+        header.id = 'fiveWordHeader';
+        wordHeader.id = 'fiveWordWordHeader';
+        attemptHeader.id = 'fiveWordAttemptHeader';
+        wordHeader.innerText = 'Words';
+        attemptHeader.innerText = 'Attempts';
+        header.appendChild(wordHeader);
+        header.appendChild(attemptHeader);
+        let gameBoard = document.getElementById('game');
+        gameBoard.insertBefore(header, gameBoard.firstChild);
+    }
+    endFiveWord() {
+        //Create a new game board to display the previous words and
+        //the attempts it took to guess them
+        let columns = Number(this.wordSize) + 1;
+        let rows = 5;
+        this.setupGameBoard(columns, rows);
+        for (let [i, word] of this.fiveWords.entries()) {
+            this.displayPlayersGuess(word.split(''), i);
+        }
+        this.fiveWordFormatGameBoard(columns);
+        this.writeMessage(`You guessed 5 words in ${this.attemptsUsed} out of ${this.totalAttempts} tries.`);
+    }
+    writeMessage(text){
+        let message = document.getElementById('message');
+            message.innerText = text;
     }
     test() {
         //run in setup to test current method that is work in progress
         console.log(this.word);
-        console.log(this.strictMode);
+        console.log(this.fiveWords);
     }
 }

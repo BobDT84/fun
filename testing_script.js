@@ -1,14 +1,18 @@
 function newGame(e) {
     e.preventDefault();
-    console.log(e);
-    console.log(`Pointer ID ${e.pointerId}`);
     if(e.pointerId >= 0){
         let wordSize = document.getElementById('wordSize').value;
         let maxAttempts = document.getElementById('maxAttempts').value;
         let modes = document.getElementsByClassName('mode');
-        let strictMode = document.getElementById('strictMode').checked;
-        let game = new Game(wordSize, maxAttempts, strictMode);
-        game.setupGame();
+        let activeModes = [];
+        for(let mode of modes){
+            if(mode.checked){
+                activeModes.push(mode.id);
+            }
+        }
+        let game = new Game(wordSize, maxAttempts, activeModes);
+        game.setArrayOfWords();
+        game.setupNewGame();
     }
 }
 

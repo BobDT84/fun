@@ -1,0 +1,30 @@
+setupTenWordMode(){
+        this.totalAttempts = Number(this.maxAttempts) * 10;
+        this.attemptsUsed = 0;
+        this.wordCount = 1;
+    }
+
+displayPlayersGuess(playersGuess = this.playersGuess, attemptID = this.attemptID) {
+    let attempt = document.getElementById(attemptID);
+    for (let i = 0; i < playersGuess.length; i++) {
+        let letter = document.getElementById(attemptID + ' l' + i);
+        letter.innerText = playersGuess[i];
+    }
+}
+
+setupGameBoard(wordSize, maxAttempts) {
+
+constructor(wordSize, maxAttempts, activatedModes = []) {
+    this.word = '';
+    this.arrayOfWords = [];
+    this.randomIndex;
+    this.maxAttempts = maxAttempts;
+    this.currentAttempt = '0';
+    this.attemptID;
+    this.wordSize = wordSize;
+    this.playersGuess = [];
+    this.guessAccuracy = [];
+    this.guessLetterStatus = {};
+    this.playing = true;
+    this.activatedModes = activatedModes;
+}
