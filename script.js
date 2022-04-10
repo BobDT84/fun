@@ -6,7 +6,8 @@ function newGame(e) {
         let wordSize = document.getElementById('wordSize').value;
         let maxAttempts = document.getElementById('maxAttempts').value;
         let game = new Game(wordSize, maxAttempts);
-        game.setupGame();
+        game.setArrayOfWords();
+        game.setupNewGame();
     }
 }
 
