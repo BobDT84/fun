@@ -277,11 +277,7 @@ class Game {
         }
     }
     isCorrectGuess() {
-        let i = 0;
-        while (this.guessAccuracy[i] == 'correct') {
-            i++;
-        }
-        if (i == this.guessAccuracy.length) { return true; } else { return false; }
+        return this.playersGuess.join('') == this.word;
     }
     gameLost() {
         if (this.fiveWordMode) {
