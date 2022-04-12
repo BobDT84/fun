@@ -238,3 +238,30 @@ input {
     font-size: 24px;
     margin-left: auto;
 }
+
+.definition-api {
+    text-decoration: underline;
+    color: whitesmoke;
+}
+
+.no-click {
+    cursor: default;
+}
+
+.to-other-card{
+    color: #9b9b9b;
+}
+
+.tooltip-text {
+    visibility: hidden;
+    position: absolute;
+    z-index: 2;
+    background-color: whitesmoke;
+    color: black;
+    text-align: center;
+    
+}
+
+.to-other-card:hover .tooltip-text{
+    visibility: visible;
+}

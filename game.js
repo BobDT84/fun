@@ -160,7 +160,7 @@ class Game {
         let card = document.createElement('div');
         card.id = cardID;
         card.className = 'definition-card layer1 hide';
-        if(cardID == 'card1'){
+        if (cardID == 'card1') {
             card.classList.toggle('hide');
         }
 
@@ -168,8 +168,9 @@ class Game {
             word: ['p', 'definition-content defintion-word', word],
             phonetic: ['p', 'definition-content', phonetic],
             phoneticAudio: ['audio', 'definition-content phonetic-audio', phoneticAudio],
-            partOfSpeech: ['span', 'defintion-content part-of-speech button', partOfSpeech],
-            definitions: ['div', 'definition-content defintions', this.firstTwoDefinitions(definitions)]
+            partOfSpeech: ['span', 'defintion-content part-of-speech button no-click', partOfSpeech],
+            definitions: ['div', 'definition-content defintions', this.firstTwoDefinitions(definitions)],
+            reference: ['a', 'definition-content definition-api', 'Definition provided by dictionaryapi.dev/']
         }
 
         for (let id in definition) {
@@ -193,13 +194,16 @@ class Game {
             else {
                 element.innerText = content;
             }
+            if (id == 'reference') {
+                element.href = 'https://dictionaryapi.dev/';
+            }
             card.appendChild(element);
         }
         let closeButton = document.createElement('div');
         closeButton.className = 'button definition-close';
         closeButton.id = 'closeButton' + cardID;
         closeButton.innerText = 'Close';
-        closeButton.addEventListener('click',(e) => {this.showHideDefinition(e.path[1].id)});
+        closeButton.addEventListener('click', (e) => { this.showHideDefinition(e.path[1].id) });
         card.appendChild(closeButton);
         let game = document.getElementById('game-container');
         game.appendChild(card);
@@ -471,12 +475,13 @@ class Game {
             let phonetic = await object.phonetic,
                 partOfSpeech = await object.meanings[0].partOfSpeech,
                 definitions = await object.meanings[0].definitions;
-            let phoneticAudio =false;
+            let phoneticAudio = false;
             if (await object.phonetics.length > 0) {
                 let phoneticAudio = await object.phonetics[0].audio;
             }
             this.createDefinitionCard(cardID, word, phonetic, phoneticAudio, partOfSpeech, definitions);
         }
+        this.linkDefinitionCards();
     }
     firstTwoDefinitions(definitions) {
         let firstDefinition = "1.  " + definitions[0].definition;
@@ -484,17 +489,62 @@ class Game {
         let secondDefinition = "2.  " + definitions[1].definition;
         return [firstDefinition, secondDefinition];
     }
-    clearDefinitionCards(){
+    clearDefinitionCards() {
         let cards = document.getElementsByClassName('definition-card');
-        for(let card of cards){
+        for (let card of cards) {
             card.remove();
         }
     }
-    linkDefinitionCards(){
-        let cards = document.getElementsByClassName('definition-card');
+    linkDefinitionCards() {
+        let cardsByClassName = document.getElementsByClassName('definition-card');
+        if(cardsByClassName.length > 1){
+            let cards = {};
+            let numbers = [];
+            for (let domElement of cardsByClassName) {
+                let cardID = domElement.id;
+                let partOfSpeechID = 'partOfSpeech' + cardID;
+                let partOfSpeechDOM = document.getElementById(partOfSpeechID);
+                let partOfSpeechText = partOfSpeechDOM.innerText;
+                let number = Number(cardID.split('').pop())
+                numbers.push(number);
+                cards[number] = {
+                    cardID: cardID,
+                    partOfSpeechDOM: partOfSpeechDOM,
+                    partOfSpeechText: partOfSpeechText,
+                }
+            }
+            numbers.sort();
+            function toggleHide(cardID){
+                let card = document.getElementById(cardID);
+                card.classList.toggle('hide');
+            }
+            for (let currentCard in cards) {
+                let currentCardNumber = Number(currentCard);
+                let currentCardID = cards[currentCard].cardID;
+                for(let number of numbers){
+                    if(number == currentCardNumber){continue;}
+                    let toCardID = cards[number].cardID;
+                    let tooltip = document.createElement('p');
+                    tooltip.className = 'tooltip-text';
+                    tooltip.innerText = toCardID;
+                    let button = document.createElement('span');
+                    button.className = 'defintion-content part-of-speech button to-other-card'
+                    button.id = 'to'+ toCardID;
+                    button.innerText = cards[number].partOfSpeechText;
+                    button.addEventListener('click',(e)=>{
+                        toggleHide(currentCardID);
+                        toggleHide(toCardID);
+                    })
+                    let domElement = cards[currentCard].partOfSpeechDOM;
+                    domElement.after(button);
+                    domElement.before(tooltip);
+                }
+            }
+        }
     }
     test() {
         //run in setup to test current method that is work in progress
+        this.word = 'HOUSE';
         console.log(this.word);
     }
 }
