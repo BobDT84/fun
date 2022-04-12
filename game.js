@@ -154,12 +154,61 @@ class Game {
         this.attemptsUsed = 0;
         this.fiveWords = [];
     }
+    createDefinitionCard(cardID, word, phonetic, phoneticAudio, partOfSpeech, definitions) {
+        console.log('creating card');
+        console.log(phonetic);
+        let card = document.createElement('div');
+        card.id = cardID;
+        card.className = 'definition-card layer1 hide';
+        if(cardID == 'card1'){
+            card.classList.toggle('hide');
+        }
+
+        let definition = {
+            word: ['p', 'definition-content defintion-word', word],
+            phonetic: ['p', 'definition-content', phonetic],
+            phoneticAudio: ['audio', 'definition-content phonetic-audio', phoneticAudio],
+            partOfSpeech: ['span', 'defintion-content part-of-speech button', partOfSpeech],
+            definitions: ['div', 'definition-content defintions', this.firstTwoDefinitions(definitions)]
+        }
+
+        for (let id in definition) {
+            let elementTag = definition[id][0],
+                className = definition[id][1],
+                content = definition[id][2],
+                element = document.createElement(elementTag);
+            if (!content) { continue; }
+            element.className = className;
+            element.id = id + cardID;
+            if (id == 'phoneticAudio') {
+                element.controls = true;
+                element.src = content;
+            } else if (id == 'definitions') {
+                for (let definition of content) {
+                    let p = document.createElement('p');
+                    p.innerText = definition;
+                    element.appendChild(p);
+                }
+            }
+            else {
+                element.innerText = content;
+            }
+            card.appendChild(element);
+        }
+        let closeButton = document.createElement('div');
+        closeButton.className = 'button definition-close';
+        closeButton.id = 'closeButton' + cardID;
+        closeButton.innerText = 'Close';
+        closeButton.addEventListener('click',(e) => {this.showHideDefinition(e.path[1].id)});
+        card.appendChild(closeButton);
+        let game = document.getElementById('game-container');
+        game.appendChild(card);
+    }
     setupNewGame() {
         this.setGameModeStatus();
         this.resetGame();
         this.addKeyPressListeners();
         if (this.fiveWordMode) { this.setupFiveWordMode(); }
-        this.test();
     }
     resetGame() {
         this.currentAttempt = '0';
@@ -173,11 +222,12 @@ class Game {
         this.setWord();
         this.setAttemptID();
         this.setGuessAccuracy();
+        this.clearDefinitionCards();
         this.playing = true;
         this.test();
     }
     addKeyPressListeners() {
-        document.onkeydown = (e) => { this.handleKeyPress(e.key.toUpperCase())};
+        document.onkeydown = (e) => { this.handleKeyPress(e.key.toUpperCase()) };
     }
     addKeyClickListeners() {
         let keys = document.getElementsByClassName('key');
@@ -280,6 +330,7 @@ class Game {
         return this.playersGuess.join('') == this.word;
     }
     gameLost() {
+        console.log('game lost');
         if (this.fiveWordMode) {
             this.attemptsUsed++;
             this.nextWordOfFiveWord();
@@ -288,8 +339,10 @@ class Game {
             alert('Sorry, you lost. Better luck next time.');
             this.playing = false;
         }
+        this.getDefinition();
     }
     gameWon() {
+        console.log('game won');
         if (this.fiveWordMode) {
             this.attemptsUsed++;
             this.nextWordOfFiveWord();
@@ -297,6 +350,7 @@ class Game {
             alert('You WIN!');
             this.playing = false;
         }
+        this.getDefinition();
     }
     checkLetters() {
         let guess = this.playersGuess;
@@ -392,13 +446,55 @@ class Game {
         this.fiveWordFormatGameBoard(columns);
         this.writeMessage(`You guessed 5 words in ${this.attemptsUsed} out of ${this.totalAttempts} tries.`);
     }
-    writeMessage(text){
+    writeMessage(text) {
         let message = document.getElementById('message');
-            message.innerText = text;
+        message.innerText = text;
+    }
+    showHideDefinition(cardID) {
+        let card = document.getElementById(cardID);
+        card.classList.toggle('hide');
+    }
+    async getDefinition(word = this.word) {
+        console.log('getting definition');
+        this.clearDefinitionCards();
+        let apiAddress = 'https://api.dictionaryapi.dev/api/v2/entries/en/';
+        let apiCallAddress = apiAddress + word;
+        let response = await fetch(apiCallAddress, { method: 'GET', credentials: 'omit' });
+        //credentials: 'omit' does not send or receive cookies
+        let data = await response.json();
+        console.log('Data');
+        console.log(data);
+        let i = 1;
+        for (let object of data) {
+            let cardID = 'card' + i.toString();
+            i++;
+            let phonetic = await object.phonetic,
+                partOfSpeech = await object.meanings[0].partOfSpeech,
+                definitions = await object.meanings[0].definitions;
+            let phoneticAudio =false;
+            if (await object.phonetics.length > 0) {
+                let phoneticAudio = await object.phonetics[0].audio;
+            }
+            this.createDefinitionCard(cardID, word, phonetic, phoneticAudio, partOfSpeech, definitions);
+        }
+    }
+    firstTwoDefinitions(definitions) {
+        let firstDefinition = "1.  " + definitions[0].definition;
+        if (definitions.length < 2) { return [firstDefinition]; }
+        let secondDefinition = "2.  " + definitions[1].definition;
+        return [firstDefinition, secondDefinition];
+    }
+    clearDefinitionCards(){
+        let cards = document.getElementsByClassName('definition-card');
+        for(let card of cards){
+            card.remove();
+        }
+    }
+    linkDefinitionCards(){
+        let cards = document.getElementsByClassName('definition-card');
     }
     test() {
         //run in setup to test current method that is work in progress
         console.log(this.word);
-        console.log(this.fiveWords);
     }
 }

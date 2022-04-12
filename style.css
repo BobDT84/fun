@@ -55,16 +55,20 @@ input {
 }
 
 .new-game {
+    font-size: 18px;
+}
+
+.button {
     width: fit-content;
     height: fit-content;
     background-color: #3B3B3B;
     color: whitesmoke;
-    font-size: 18px;
     padding: 1px 5px;
     border-style: groove;
     border-color: #1B1B1B;
     border-top-color: #9b9b9b;
     border-left-color: #9b9b9b;
+    cursor: pointer;
 }
 
 #game {
@@ -164,17 +168,19 @@ input {
     padding-top: 10px;
     padding-left: 25px;
     padding-bottom: 10px;
-    position: absolute;
-    z-index: 1;
     min-width: 200px;
-    background-color: #3B3B3B;
-    color: whitesmoke;
-    box-shadow: 4px 4px 10px 3px #1B1B1B;
     font-size: 18px;
-    margin: 0px;
     list-style: none;
 }
 
+.layer1 {
+    position: absolute;
+    z-index: 1;
+    background-color: #3B3B3B;
+    color: whitesmoke;
+    box-shadow: 4px 4px 10px 3px #1B1B1B;
+    margin: 0px;
+}
 .hide {
     display: none;
 }
@@ -208,4 +214,27 @@ input {
 #fiveWordAttemptHeader {
     width: 25%;
     text-align: right;
+}
+
+.definition-card {
+    width: 250px;
+    height: fit-content;
+    position: absolute;
+    top: 20px;
+    right: 10px;
+    padding: 10px;
+}
+
+.phonetic-audio {
+    width: 100%;
+    height: 20px;
+}
+
+.definition-content {
+    font-size: 16px;
+}
+
+.definition-close {
+    font-size: 24px;
+    margin-left: auto;
 }

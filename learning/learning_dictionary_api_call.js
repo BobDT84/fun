@@ -12,7 +12,6 @@ async function getDefinitionOf(word) {
     let definitionObject = {};
     if(data[0]){
         console.log('there was data');
-        console.log(data[0]);
         let dataWord = await data[0].word;
         definitionObject.word = await data[0].word;
         definitionObject.phonetic = await data[0].phonetic;
@@ -30,4 +29,3 @@ async function getDefinitionOf(word) {
 
 //Seems to always return a promise
 let obj = getDefinitionOf('house');
-
