@@ -544,7 +544,6 @@ class Game {
     }
     test() {
         //run in setup to test current method that is work in progress
-        this.word = 'HOUSE';
         console.log(this.word);
     }
 }
