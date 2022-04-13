@@ -348,7 +348,6 @@ class Game {
         let popup = document.createElement('div');
         popup.className = 'popup-window';
 
-        console.log(popupMessages, buttons, appendTo);
         for (let popupMessage of popupMessages) {
             let message = document.createElement('p');
             message.className = 'popup-message';
@@ -368,7 +367,6 @@ class Game {
             } else {
                 target = button.onClickTarget;
             }
-            console.log(target);
             newButton.addEventListener('click', (e) =>{button.onClick(target)});
             buttonContainer.appendChild(newButton);
         }
