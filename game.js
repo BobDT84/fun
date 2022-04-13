@@ -12,6 +12,7 @@ class Game {
         this.guessLetterStatus = {};
         this.playing = true;
         this.activatedModes = activatedModes;
+        this.layer1 = document.getElementById('layer1');
     }
     setGameModeStatus() {
         //toggle modes from false to true for every mode listed in activatedModes
@@ -347,6 +348,7 @@ class Game {
         let popup = document.createElement('div');
         popup.className = 'popup-window';
 
+        console.log(popupMessages, buttons, appendTo);
         for (let popupMessage of popupMessages) {
             let message = document.createElement('p');
             message.className = 'popup-message';
@@ -515,6 +517,7 @@ class Game {
         let data = await response.json();
         console.log('API Definition Data');
         console.log(data);
+        if(data.title == "No Definitions Found"){return}
         let i = 1;
         for (let object of data) {
             let cardID = 'card' + i.toString();
