@@ -155,11 +155,15 @@ class Game {
         this.fiveWords = [];
     }
     createDefinitionCard(cardID, word, phonetic, phoneticAudio, partOfSpeech, definitions) {
-        console.log('creating card');
-        console.log(phonetic);
         let card = document.createElement('div');
         card.id = cardID;
-        card.className = 'definition-card layer1 hide';
+        card.className = 'definition-card popup-window hide';
+        let header = document.createElement('h4');
+        header.className = 'definition-content definition-header';
+        header.innerHTML = `The word was ${this.word}.<br>Reference# ${this.randomIndex}`;
+        //Reference for testing purposes, to remove words that don't work or are too difficult
+        card.appendChild(header);
+
         if (cardID == 'card1') {
             card.classList.toggle('hide');
         }
@@ -204,9 +208,11 @@ class Game {
         closeButton.id = 'closeButton' + cardID;
         closeButton.innerText = 'Close';
         closeButton.addEventListener('click', (e) => { this.showHideDefinition(e.path[1].id) });
+        //Either change to card.remove() or add a feature to make the definition
+        //card reappear after it is closed at the end of a game
         card.appendChild(closeButton);
-        let game = document.getElementById('game-container');
-        game.appendChild(card);
+        let layer = document.getElementById('layer1');
+        layer.appendChild(card);
     }
     setupNewGame() {
         this.setGameModeStatus();
@@ -333,25 +339,56 @@ class Game {
     isCorrectGuess() {
         return this.playersGuess.join('') == this.word;
     }
+    createPopup(
+      popupMessages = ['No Message'],
+      buttons = [{ text: 'Close', onClick: (element) =>{element.remove()}, onClickTarget: 'self'}],
+      appendTo = document.getElementById('layer1')
+      ) {
+        let popup = document.createElement('div');
+        popup.className = 'popup-window';
+
+        for (let popupMessage of popupMessages) {
+            let message = document.createElement('p');
+            message.className = 'popup-message';
+            message.innerText = popupMessage;
+            popup.appendChild(message);
+        }
+
+        let buttonContainer = document.createElement('div');
+        buttonContainer.className = 'popup-buttons';
+        for (let button of buttons) {
+            let newButton = document.createElement('div');
+            newButton.className = 'button popup-button';
+            newButton.innerText = button.text;
+            let target;
+            if(button.onClickTarget == 'self'){
+                target = popup;
+            } else {
+                target = button.onClickTarget;
+            }
+            console.log(target);
+            newButton.addEventListener('click', (e) =>{button.onClick(target)});
+            buttonContainer.appendChild(newButton);
+        }
+        popup.appendChild(buttonContainer);
+        appendTo.appendChild(popup);
+    }
     gameLost() {
-        console.log('game lost');
         if (this.fiveWordMode) {
             this.attemptsUsed++;
-            this.nextWordOfFiveWord();
+            this.nextWordOfFiveWord('Sorry, you missed that word.');
         } else {
-            this.writeMessage(`The word was ${this.word}.  Index reference is ${this.randomIndex}`);
-            alert('Sorry, you lost. Better luck next time.');
+            this.createPopup(['Sorry, you lost.', 'Better luck next time.']);
             this.playing = false;
         }
         this.getDefinition();
     }
     gameWon() {
-        console.log('game won');
         if (this.fiveWordMode) {
             this.attemptsUsed++;
-            this.nextWordOfFiveWord();
+            this.nextWordOfFiveWord('You guessed it!');
         } else {
-            alert('You WIN!');
+            this.createPopup(['You Won!']);
             this.playing = false;
         }
         this.getDefinition();
@@ -406,14 +443,25 @@ class Game {
             this.playersGuess = [];
         }
     }
-    nextWordOfFiveWord() {
-        setTimeout(alert('Ready for the next word?'), 1000);
+    nextWordOfFiveWord(message) {
         let word = this.word + (+this.currentAttempt + 1).toString();
         //unary operator to convert currentAttempt from string to number
         this.fiveWords.push(word);
         if (this.fiveWords.length < 5) {
-            this.setRandomIndex();
-            this.resetGame();
+            let quit = (element) => {
+                this.endFiveWord();
+                element.remove();
+            };
+            let nextWord = (element) => {
+                this.setRandomIndex();
+                this.resetGame();
+                element.remove();
+            };
+            let buttons = [
+                {text: 'Quit', onClick: quit, onClickTarget: 'self'},
+                {text: 'Next', onClick: nextWord, onClickTarget: 'self'},
+            ]
+            this.createPopup([message],buttons);
         } else {
             this.endFiveWord();
         }
@@ -459,27 +507,27 @@ class Game {
         card.classList.toggle('hide');
     }
     async getDefinition(word = this.word) {
-        console.log('getting definition');
         this.clearDefinitionCards();
         let apiAddress = 'https://api.dictionaryapi.dev/api/v2/entries/en/';
         let apiCallAddress = apiAddress + word;
         let response = await fetch(apiCallAddress, { method: 'GET', credentials: 'omit' });
         //credentials: 'omit' does not send or receive cookies
         let data = await response.json();
-        console.log('Data');
+        console.log('API Definition Data');
         console.log(data);
         let i = 1;
         for (let object of data) {
             let cardID = 'card' + i.toString();
             i++;
-            let phonetic = await object.phonetic,
+            let apiWord = await object.word,
+                phonetic = await object.phonetic,
                 partOfSpeech = await object.meanings[0].partOfSpeech,
                 definitions = await object.meanings[0].definitions;
             let phoneticAudio = false;
             if (await object.phonetics.length > 0) {
                 let phoneticAudio = await object.phonetics[0].audio;
             }
-            this.createDefinitionCard(cardID, word, phonetic, phoneticAudio, partOfSpeech, definitions);
+            this.createDefinitionCard(cardID, apiWord, phonetic, phoneticAudio, partOfSpeech, definitions);
         }
         this.linkDefinitionCards();
     }
@@ -497,7 +545,7 @@ class Game {
     }
     linkDefinitionCards() {
         let cardsByClassName = document.getElementsByClassName('definition-card');
-        if(cardsByClassName.length > 1){
+        if (cardsByClassName.length > 1) {
             let cards = {};
             let numbers = [];
             for (let domElement of cardsByClassName) {
@@ -514,24 +562,24 @@ class Game {
                 }
             }
             numbers.sort();
-            function toggleHide(cardID){
+            function toggleHide(cardID) {
                 let card = document.getElementById(cardID);
                 card.classList.toggle('hide');
             }
             for (let currentCard in cards) {
                 let currentCardNumber = Number(currentCard);
                 let currentCardID = cards[currentCard].cardID;
-                for(let number of numbers){
-                    if(number == currentCardNumber){continue;}
+                for (let number of numbers) {
+                    if (number == currentCardNumber) { continue; }
                     let toCardID = cards[number].cardID;
                     let tooltip = document.createElement('p');
                     tooltip.className = 'tooltip-text';
                     tooltip.innerText = toCardID;
                     let button = document.createElement('span');
                     button.className = 'defintion-content part-of-speech button to-other-card'
-                    button.id = 'to'+ toCardID;
+                    button.id = 'to' + toCardID;
                     button.innerText = cards[number].partOfSpeechText;
-                    button.addEventListener('click',(e)=>{
+                    button.addEventListener('click', (e) => {
                         toggleHide(currentCardID);
                         toggleHide(toCardID);
                     })

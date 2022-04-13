@@ -20,10 +20,14 @@ function main() {
     let newGameButton = document.getElementById('newGame');
     newGameButton.addEventListener('click', newGame);
 
-    let modeDropdown = document.getElementById('mode-dropdown');
+    let modeDropdown = document.getElementById('selectMode');
     let modeList = document.getElementById('mode-list');
-    modeDropdown.onmouseover = function(){modeList.classList.remove('hide');}
-    modeDropdown.onmouseleave = function(){modeList.classList.add('hide');}
+    let show = function(){modeList.classList.remove('hide');}
+    let hide = function(){modeList.classList.add('hide');}
+    modeDropdown.onmouseover = show;
+    modeDropdown.onmouseleave = hide;
+    modeList.onmouseover = show;
+    modeList.onmouseleave = hide;
 }
 
 main();

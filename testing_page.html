@@ -11,6 +11,7 @@
 
 <body>
     <div id="game-container">
+        <div id="layer1" class="layer1"></div>
         <p class="test-page"><a href="index.html" class="test-page">Back to original version</a></p>
         <div class="settings-container">
             <p class="settings-title">NEW GAME SETTINGS</p>
@@ -22,9 +23,9 @@
                     <input type="text" id="maxAttempts" name="maxAttempts" value=6 required>
                     <button id="newGame" class="new-game button">New Game</button>
                 </div>
-                <div id="mode-dropdown">
-                    <span class="dropdown">Select Modes</span>
-                    <ul id="mode-list" class="dropdown-container layer1 hide">
+                <div id="option-select-container">
+                    <span id="selectMode" class="dropdown">Select Modes</span>
+                    <ul id="mode-list" class="dropdown-container popup-window hide">
                         <li>
                             <input type="checkbox" id="strict" class="dropdown-content mode" checked>
                             <label for="strictMode" class="dropdown-content">Strict Mode</label>

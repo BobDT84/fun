@@ -63,7 +63,10 @@ input {
     height: fit-content;
     background-color: #3B3B3B;
     color: whitesmoke;
+    margin: 0px;
     padding: 1px 5px;
+    border-radius: 7px;
+    border-width: 4px;
     border-style: groove;
     border-color: #1B1B1B;
     border-top-color: #9b9b9b;
@@ -161,10 +164,14 @@ input {
     border-top-color: #9b9b9b;
     border-left-color: #9b9b9b;
     max-width: 100px;
+    padding: 2px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 15px;
 
 }
 
 .dropdown-container {
+    position: absolute;
     padding-top: 10px;
     padding-left: 25px;
     padding-bottom: 10px;
@@ -173,14 +180,7 @@ input {
     list-style: none;
 }
 
-.layer1 {
-    position: absolute;
-    z-index: 1;
-    background-color: #3B3B3B;
-    color: whitesmoke;
-    box-shadow: 4px 4px 10px 3px #1B1B1B;
-    margin: 0px;
-}
+
 .hide {
     display: none;
 }
@@ -219,9 +219,6 @@ input {
 .definition-card {
     width: 250px;
     height: fit-content;
-    position: absolute;
-    top: 20px;
-    right: 10px;
     padding: 10px;
 }
 
@@ -264,4 +261,39 @@ input {
 
 .to-other-card:hover .tooltip-text{
     visibility: visible;
+}
+
+
+.layer1 {
+    position: absolute;
+    z-index: 1;
+    top: 50px;
+    left: 50%;
+    transform: translate(-50%,0);
+}
+
+.popup-window{
+    background-color: #3B3B3B;
+    color: whitesmoke;
+    box-shadow: 4px 4px 10px 3px #1B1B1B;
+    padding: 10px;
+    margin: 0px;
+    margin-bottom: 20px;
+}
+
+.popup-message {
+    font-size: 36px;
+    text-align: center;
+    margin: 0px;
+    margin-bottom: 10px;
+}
+
+.popup-close{
+    margin: 0px auto;
+    font-size: 20px;
+}
+
+.popup-buttons{
+    display: flex;
+    justify-content: space-evenly;
 }
