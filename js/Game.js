@@ -25,10 +25,9 @@ const Game = (function (wordSize, maxAttempts, activatedModes = []) {
     return { word, arrayOfWords, wordIndex, getNewRandomIndex, getNewWord };
 });
 
+export { Game };
+
 let log = console.log;
-let ggg = Game(5, 6);
-console.log('gg');
-console.log(ggg);
-console.log(ggg.getNewWord(55));
-console.log(ggg.getNewWord(55));
-console.log(ggg.getNewWord(ggg.getNewRandomIndex()));
+let ggg;
+//ggg = Game(5, 6);
+

@@ -1,3 +1,5 @@
+import { Game } from './Game.js';
+
 function newGame(e) {
     e.preventDefault();
     console.log(e);
@@ -5,9 +7,7 @@ function newGame(e) {
     if(e.pointerId >= 0){
         let wordSize = document.getElementById('wordSize').value;
         let maxAttempts = document.getElementById('maxAttempts').value;
-        let game = new Game(wordSize, maxAttempts);
-        game.setArrayOfWords();
-        game.setupNewGame();
+        Game(wordSize, maxAttempts);
     }
 }
 
