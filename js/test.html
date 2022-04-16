@@ -5,14 +5,18 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <title>My Word Game</title>
+    <link rel="stylesheet" href="../styles/style.css">
+    <title>Testing js</title>
 </head>
 
 <body>
+    <div id="test">
+        This is for testing
+    </div>
     <div id="game-container">
         <div id="layer1" class="layer1"></div>
-        <p class="test-page"><a href="testing_page.html" class="test-page">Try the unstable version with new features</a></p>
+        <p class="test-page"><a href="testing_page.html" class="test-page">Try the unstable version with new
+                features</a></p>
         <div class="settings-container">
             <p class="settings-title">NEW GAME SETTINGS</p>
             <div class="settings-input">
@@ -24,14 +28,21 @@
             </div>
         </div>
         <div id="game">
-            
+
         </div>
         <div id="keyboard">
-            
+
         </div>
         <div id="guess"></div>
-        <script src="./js/main.js"></script>
-        <script src="./js/Game.js"></script>
+
+        <script src="Game.js" type="module"></script>
+        <script src="./modules/Word.js" type="module"></script>
+
+
+        <!-- 
+        <script src="./modules/Board.js" type="module"></script>
+
+        -->
     </div>
 </body>
 
