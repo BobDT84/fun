@@ -1,10 +1,9 @@
-function Board(wordSize, maxAttempts) {
+function Board() {
     const GAME = document.getElementById('game');
     const KEYBOARD = document.getElementById('keyboard');
 
     function newGameBoard(wordSize, maxAttempts) {
-        console.log('new game board');
-        if (isCorrectAttemptSetup && isCorrectLetterSetup) {
+        if (isCorrectLetterSetup(wordSize)  && isCorrectAttemptSetup(maxAttempts)) {
             clearBoard(GAME);
             clearBoard(KEYBOARD);
             setupGameBoard(wordSize, maxAttempts);
@@ -13,14 +12,14 @@ function Board(wordSize, maxAttempts) {
         }
 
     }
-    function isCorrectLetterSetup() {
+    function isCorrectLetterSetup(wordSize) {
         if (wordSize < 4 || wordSize > 8) {
             alert('letter count not set properly');
             return false;
         }
         return true;
     }
-    function isCorrectAttemptSetup() {
+    function isCorrectAttemptSetup(maxAttempts) {
         if (maxAttempts < 2 || maxAttempts > 10) {
             alert('Attempt count not set properly');
             return false;
@@ -30,7 +29,6 @@ function Board(wordSize, maxAttempts) {
 
     function setupGameBoard(wordSize, maxAttempts) {
         let attemptRowDiv, letterDiv, attemptID;
-        console.log('setup game board');
         for (let i = 0; i < maxAttempts; i++) {
             attemptID = 'attempt' + i.toString();
             attemptRowDiv = document.createElement('div');
@@ -44,7 +42,6 @@ function Board(wordSize, maxAttempts) {
                 attemptRowDiv.appendChild(letterDiv);
             }
             GAME.appendChild(attemptRowDiv);
-            console.log(i);
         }
         let message = document.createElement('div');
         message.id = 'message';
@@ -80,28 +77,12 @@ function Board(wordSize, maxAttempts) {
 
         key.id = 'enter';
         key.innerText = 'Enter';
-        key.onclick = () => { submitPlayersGuess(); };
         row3.appendChild(key);
 
         key = document.createElement('div');
         key.id = 'delete';
         key.innerText = 'Del';
-        key.onclick = () => { deletePreviousLetter(); };
         row3.appendChild(key);
-    }
-
-    function addKeyPressListeners() {
-        document.onkeydown = (e) => { handleKeyPress(e.key.toUpperCase()) };
-    }
-
-    function addKeyClickListeners() {
-        let keys = document.getElementsByClassName('key');
-        for (let key of keys) {
-            key.onclick = (e) => {
-                let letter = e.path[0].innerText;
-                addToPlayersGuess(letter);
-            };
-        }
     }
 
     function clearBoard(element) {

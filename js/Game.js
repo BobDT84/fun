@@ -16,7 +16,8 @@ const Game = (function (wordSize, maxAttempts, activatedModes = []) {
         wordIndex = wordObj.wordIndex;
         getNewRandomIndex = wordObj.getNewRandomIndex;
         getNewWord = wordObj.getNewWord;
-        Board(wordSize,maxAttempts).newGameBoard();
+        let createBoard = Board();
+        createBoard.newGameBoard(wordSize,maxAttempts);
         return wordObj;
     }
     let temp = init();
