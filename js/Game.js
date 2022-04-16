@@ -1,5 +1,6 @@
 import { Word } from './modules/Word.js';
 import { Board } from './modules/Board.js';
+import { Input } from './modules/Input.js';
 
 const Game = (function (wordSize, maxAttempts, activatedModes = []) {
     document.addEventListener('DOMContentLoaded', init);
